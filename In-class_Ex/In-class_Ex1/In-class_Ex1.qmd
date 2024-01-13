@@ -1,0 +1,59 @@
+---
+title: "In-class Exercise 1"
+date: "January 13, 2024"
+date-modified: "last modified"
+toc: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+editor: visual
+---
+
+# Getting Started
+
+::: panel-tabset
+## Loading R package
+
+In this in-class exercise, two R packages will be used. They are:
+
+-   [tidyverse](https://www.tidyverse.org/), and
+
+-   [haven](https://haven.tidyverse.org/)
+
+The code chunk used is as follows:
+
+```{r}
+pacman::p_load(tidyverse,haven)
+```
+
+## Importing PISA data
+
+The code chunk below uses [`read_sas()`](https://haven.tidyverse.org/reference/read_sas.html) of [haven](https://haven.tidyverse.org/index.html) to import PISA data into R environment.
+
+```{r}
+#| eval: false
+stu_qqq <- read_sas("data/cy08msp_stu_qqq.sas7bdat")
+```
+
+## Filtering Singapore data
+
+The code chunk below uses [`filter()`] to filter country code of Singapore only
+
+```{r}
+#| eval: false
+stu_qqq_SG <- stu_qqq %>%
+  filter(CNT == "SGP")
+```
+
+
+```{r}
+#| eval: false
+write_rds(stu_qqq_SG,
+          "data/stu_qqq_SG.rds")
+```
+
+```{r}
+stu_qqq_SG <- read_rds("data/stu_qqq_SG.rds")
+```
+:::

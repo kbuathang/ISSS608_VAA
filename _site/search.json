@@ -1,0 +1,9 @@
+[
+  {
+    "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html",
+    "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html",
+    "title": "In-class Exercise 1",
+    "section": "",
+    "text": "Getting Started\n\nLoading R packageImporting PISA dataFiltering Singapore data\n\n\nIn this in-class exercise, two R packages will be used. They are:\n\ntidyverse, and\nhaven\n\nThe code chunk used is as follows:\n\n\nCode\npacman::p_load(tidyverse,haven)\n\n\n\n\nThe code chunk below uses read_sas() of haven to import PISA data into R environment.\n\n\nCode\nstu_qqq &lt;- read_sas(\"data/cy08msp_stu_qqq.sas7bdat\")\n\n\n\n\nThe code chunk below uses [filter()] to filter country code of Singapore only\n\n\nCode\nstu_qqq_SG &lt;- stu_qqq %&gt;%\n  filter(CNT == \"SGP\")\n\n\n\n\nCode\nwrite_rds(stu_qqq_SG,\n          \"data/stu_qqq_SG.rds\")\n\n\n\n\nCode\nstu_qqq_SG &lt;- read_rds(\"data/stu_qqq_SG.rds\")"
+  }
+]

@@ -1,0 +1,17 @@
+---
+title: "Welcome to ISSS608 Visual Analytics and Applications website"
+listing:
+  type: grid
+  max-items: 3
+  contents:
+    - "Take-home_Ex/*/*.qmd"
+    - "In-class_Ex/*/*.qmd"
+    - "Hands-on_Ex/*/*.qmd"
+  sort: 
+    - "date desc"
+toc: false
+---
+
+![](picture/girl.png)
+
+<button type="button" class="btn btn-primary"> Lastest Posts</button>
