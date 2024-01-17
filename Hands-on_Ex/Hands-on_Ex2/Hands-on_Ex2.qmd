@@ -1,0 +1,315 @@
+---
+title: "Hands-on Exercise 2: Beyond ggplot2 Fundamentals"
+date: January 17,2024
+date-modified: "last-modified"
+toc: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+code-fold: true
+code-summary: "Show the code"
+---
+
+# 1 Getting Started
+
+::: panel-tabset
+## Loading R package
+
+In this exercise, we will use another our R packages aside from tidyverse.
+
+-   ggrepel: an R package provides geoms for ggplot2 to repel overlapping text labels.
+
+-   ggthemes: an R package provides some extra themes, geoms, and scales for ‘ggplot2’.
+
+-   hrbrthemes: an R package provides typography-centric themes and theme components for ggplot2.
+
+-   patchwork: an R package for preparing composite figure created using ggplot2.
+
+The code chunk below uses `p_load()` of pacman package to check if these packages are installed in the computer and load them onto your working R environment.
+
+```{r}
+pacman::p_load(ggrepel, patchwork, 
+               ggthemes, hrbrthemes,
+               tidyverse)
+```
+
+## Importing Data
+
+The code chunk below imports exam_data.csv into R environment by using `read_csv()` function of [readr](https://readr.tidyverse.org/) package.
+
+```{r}
+exam_data <- read.csv("data/Exam_data.csv")
+```
+
+## Summarizing Data
+
+The code chunk below uses `summary()`to summarize the data.
+
+```{r}
+summary(exam_data)
+```
+
+-   Year end examination grades of a cohort of primary 3 students from a local school.
+
+-   There are a total of seven attributes. Four of them are categorical data type and the other three are in continuous data type.
+
+    -   The categorical attributes are: ID, CLASS, GENDER and RACE.
+
+    -   The continuous attributes are: MATHS, ENGLISH and SCIENCE
+:::
+
+# 2 Beyond ggplot2 Annotation: ggrepel
+
+A significant challenge in plotting statistical graphs is annotation, particularly with a high volume of data points.
+
+Below is a comparison of annotations with and without the use of the [ggrepel](https://ggrepel.slowkow.com/) package.
+
+::: panel-tabset
+## without ggrepel
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5) +  
+  geom_label(aes(label = ID), 
+             hjust = .5, 
+             vjust = -.5) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")+
+  theme(plot.background=element_rect(fill="#F8EBF0",colour=NA),
+        panel.background = element_rect(fill = "#F8EBF0", colour = NA))
+```
+
+## with ggrepel
+
+**ggrepel** is an extension of **ggplot2** package which provides `geoms` for **ggplot2** to repel overlapping text as in our examples.
+
+We simply replace `geom_text()` by [geom_text_repel()](https://ggrepel.slowkow.com/reference/geom_text_repel.html) and `geom_label()` by [geom_label_repel.](https://ggrepel.slowkow.com/reference/geom_text_repel.html)
+
+```{r}
+ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5,
+              colour = "#AB1858") +  
+  geom_label_repel(aes(label = ID), 
+                   fontface = "bold") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")+
+  theme(plot.background=element_rect(fill="#F8EBF0",colour=NA),
+        panel.background = element_rect(fill = "#F8EBF0", colour = NA))
+```
+:::
+
+# 3 Beyond ggplot2 Themes
+
+ggplot2 comes with [eight built-in themes](https://ggplot2.tidyverse.org/reference/ggtheme.html), they are: `theme_gray()`, `theme_bw()`, `theme_classic()`, `theme_dark()`, `theme_light()`, `theme_linedraw()`, `theme_minimal()`, and `theme_void()`.
+
+`theme_gray()`
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 colour="white", 
+                 fill="#F3A7C1") +
+  theme_gray() +
+  ggtitle("Distribution of Maths scores")+
+  theme(plot.background=element_rect(fill="#F8EBF0",colour=NA),
+        panel.background = element_rect(fill = "#F8EBF0", colour = NA))
+
+```
+
+## 3.1 ggtheme package
+
+[ggthemes](https://cran.r-project.org/web/packages/ggthemes/) provides [‘ggplot2’ themes](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/) that replicate the look of plots by Edward Tufte, Stephen Few, [Fivethirtyeight](https://abcnews.go.com/538), [The Economist](https://www.economist.com/graphic-detail), ‘Stata’, ‘Excel’, and [The Wall Street Journal](https://www.pinterest.com/wsjgraphics/wsj-graphics/), among others.
+
+::: panel-tabset
+## `theme_economist()`
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 colour="grey25", 
+                 fill="beige") +
+  ggtitle("Distribution of Maths scores") +
+  theme_economist()
+```
+
+## `theme_solarized()`
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 colour="grey25", 
+                 fill="lightblue") +
+  ggtitle("Distribution of Maths scores") +
+  theme_solarized()
+```
+:::
+
+## 3.2 hrbthems package
+
+[hrbrthemes](https://cinc.rud.is/web/packages/hrbrthemes/) package provides a base theme that focuses on typographic elements, such as where various labels are placed and the fonts that are used.
+
+::: panel-tabset
+## Original
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 colour="white", 
+                 fill="#F3A7C1") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum()
+```
+
+## With arguments
+
+```{r}
+ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 colour="white", 
+                 fill="#F3A7C1") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum(axis_title_size = 18,
+              base_size = 15,
+              grid = "Y")
+
+```
+
+::: {.callout-Explanation of arguments}
+
+-   `axis_title_size` argument is used to increase the font size of the axis title to 18,
+
+-   `base_size` argument is used to increase the default axis label to 15, and
+
+-   `grid argument` is used to remove the x-axis grid lines.
+:::
+
+:::
+
+# 4 Beyond Single Graph
+
+There are several ggplot2 extension’s functions support the needs to prepare composite figure by combining several graphs such as [`grid.arrange()`](https://cran.r-project.org/web/packages/gridExtra/vignettes/arrangeGrob.html) of **gridExtra** package and [`plot_grid()`](https://wilkelab.org/cowplot/reference/plot_grid.html) of [**cowplot package.**](https://wilkelab.org/cowplot/)
+
+In this section, [**patchwork**](https://patchwork.data-imaginist.com/) will be used to combine separate ggplot2 graphs into a single figure.
+
+Patchwork package has a very simple syntax as following:
+
+-   Two-Column Layout using the Plus Sign +.
+
+-   Parenthesis () to create a subplot group.
+
+-   Two-Row Layout using the Division Sign /
+
+## 4.1 Combining two ggplot2 graphs
+
+The figures below shows a composite of two histograms created using **patchwork**
+
+```{r}
+p1 <- ggplot(data=exam_data, 
+             aes(x = MATHS)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 colour="white", 
+                 fill="#F3A7C1") + 
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of Maths scores")+
+  theme(plot.title=element_text(size =9),
+        axis.title.y=element_text(size = 8,
+                                  vjust=0.9),
+        axis.title.x=element_text(size = 8))
+
+p2 <- ggplot(data=exam_data, 
+             aes(x = ENGLISH)) +
+  geom_histogram(bins=20, 
+                 boundary = 100,
+                 color="white", 
+                 fill="lightblue") +
+  coord_cartesian(xlim=c(0,100)) +
+  ggtitle("Distribution of English scores")+
+  theme(plot.title=element_text(size =9),
+        axis.title.y=element_text(size = 8,
+                                  vjust=0.9),
+        axis.title.x=element_text(size = 8))
+
+p1+p2
+```
+
+## 4.2 Combining three ggplot2 graphs
+
+We can use appropriate operators to plot more complex composite.
+
+-   “|” operator to stack two ggplot2 graphs,
+
+-   “/” operator to place the plots beside each other,
+
+-   “()” operator the define the sequence of the plotting.
+
+```{r}
+p3 <- ggplot(data=exam_data, 
+       aes(x= MATHS, 
+           y=ENGLISH)) +
+  geom_point() +
+  geom_smooth(method=lm, 
+              size=0.5,
+              colour = "#AB1858") +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")+
+  theme(plot.background=element_rect(fill="#DADADA",colour=NA),
+        panel.background = element_rect(fill = "#DADADA", colour = NA),
+        plot.title=element_text(size =9,hjust=0),
+        axis.title.y=element_text(size = 8),
+        axis.title.x=element_text(size = 8))
+(p1 / p2) | p3
+```
+
+## 4.3 Creating a composite figure with tag
+**patchwork** also provides auto-tagging capabilities as shown in the figure below.
+```{r}
+((p1 / p2) | p3) + 
+  plot_annotation(tag_levels = 'I')
+
+```
+
+## 4.4 Creating figure with insert
+We can place one or several plots or graphic elements freely on top or below another plot by using [`inset_element()`](https://patchwork.data-imaginist.com/reference/inset_element.html) of **patchwork**
+```{r}
+p3 + inset_element(p2, 
+                   left = 0.02, 
+                   bottom = 0.7, 
+                   right = 0.5, 
+                   top = 1)
+
+```
+
+## 4.5 Creating a composite figure by using patchwork and ggtheme
+The figure below is created by using **patchwork** and `theme_economist()` of ggthemes package.
+
+```{r}
+patchwork <- (p1 / p2) | p3
+patchwork & theme_economist() +
+  theme(plot.title=element_text(size =8.5),
+        axis.title.y=element_text(size = 8,
+                                  vjust=0.9),
+        axis.title.x=element_text(size = 8))
+```

@@ -7,9 +7,11 @@ execute:
   eval: true
   echo: true
   warning: false
+code-fold: true
+code-summary: "Show the code"
 ---
 
-# Getting Started
+# 1 Getting Started
 
 ::: panel-tabset
 ## Loading R package
@@ -28,7 +30,7 @@ The code chunk below imports exam_data.csv into R environment by using `read_csv
 exam_data <- read.csv("data/Exam_data.csv")
 ```
 
-## Summary Data
+## Summarizing Data
 
 The code chunk below uses `summary()`to summarize the data.
 
@@ -45,7 +47,7 @@ summary(exam_data)
     -   The continuous attributes are: MATHS, ENGLISH and SCIENCE
 :::
 
-# R Graphics VS ggplot
+# 2 R Graphics VS ggplot
 
 ::: panel-tabset
 ## R Graphics
@@ -72,7 +74,7 @@ ggplot(data=exam_data, aes(x = MATHS)) +
 
 According to [Hadley Wickham](http://varianceexplained.org/r/teach_ggplot2_to_beginners/#comment-1745406157), the transferable skills from ggplot2 are not the idiosyncrasies of plotting syntax, but a powerful way of thinking about visualisation, as a way of mapping between variables and the visual properties of geometric objects that you can perceive.
 
-# Essential Grammatical Elements in ggplot2: geom
+# 3 Essential Grammatical Elements in ggplot2: geom
 
 Geometric objects are the actual marks we put on a plot. Examples include:
 
@@ -90,7 +92,7 @@ Geometric objects are the actual marks we put on a plot. Examples include:
 
 -   `geom_map()` for drawing polygons in the shape of a map! (You can access the data to use for these maps by using the map_data() function).
 
-    ![](geom.jpg)
+    ![](picture/geom.jpg)
 
 -   A plot must have at least one geom; there is no upper limit. You can add a geom to a plot using the + operator.
 
@@ -222,7 +224,7 @@ ggplot(data=exam_data,
              size = 0.5)        
 ```
 
-# Essential Grammatical Elements in ggplot2: stat
+# 4 Essential Grammatical Elements in ggplot2: stat
 
 The [Statistics functions](https://ggplot2.tidyverse.org/reference/#stats) statistically transform data, usually as some form of summary. For example:
 
@@ -291,7 +293,7 @@ ggplot(data=exam_data,
               size=0.5)
 ```
 
-# Essential Grammatical Elements in ggplot2: Facets
+# 5 Essential Grammatical Elements in ggplot2: Facets
 
 Facetting generates small multiples (sometimes also called trellis plot), each displaying a different subset of the data. They are an alternative to aesthetics for displaying additional discrete variables. ggplot2 supports two types of factes, namely: `facet_grid()` and `facet_wrap()`.
 
@@ -321,7 +323,7 @@ ggplot(data=exam_data,
     facet_grid(~ CLASS)
 ```
 
-# Essential Grammatical Elements in ggplot2: Coordinates
+# 6 Essential Grammatical Elements in ggplot2: Coordinates
 
 The *Coordinates* functions map the position of objects onto the plane of the plot. There are a number of different possible coordinate systems to use
 
@@ -367,7 +369,7 @@ ggplot(data=exam_data,
                   ylim=c(0,100))
 ```
 
-# Essential Grammatical Elements in ggplot2: themes
+# 7 Essential Grammatical Elements in ggplot2: themes
 
 Themes control elements of the graph not related to the data. A list of theme can be found at this [link](https://ggplot2.tidyverse.org/reference/ggtheme.html). Each theme element can be conceived of as either a line (e.g. x-axis), a rectangle (e.g. graph background), or text (e.g. axis title).
 

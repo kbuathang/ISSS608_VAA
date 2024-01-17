@@ -17,6 +17,17 @@ website:
             href: Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4.html
           - text: Hands-on Exercise 5
             href: Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5.html
+          - text: Hands-on Exercise 6
+            href: Hands-on_Ex/Hands-on_Ex6/Hands-on_Ex6.html
+          - text: Hands-on Exercise 7
+            href: Hands-on_Ex/Hands-on_Ex7/Hands-on_Ex7.html
+          - text: Hands-on Exercise 8
+            href: Hands-on_Ex/Hands-on_Ex8/Hands-on_Ex8.html
+          - text: Hands-on Exercise 9
+            href: Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9.html
+          - text: Hands-on Exercise 10
+            href: Hands-on_Ex/Hands-on_Ex10/Hands-on_Ex10.html
+
       - text: In-class Exercise
         menu:
           - text: In-class Exercise 1
@@ -26,7 +37,20 @@ website:
           - text: In-class Exercise 3
             href: In-class_Ex/In-class_Ex3/In-class_Ex3.html
           - text: In-class Exercise 4
-            href: In-class_Ex/In-class_Ex4/In-class_Ex4.html           
+            href: In-class_Ex/In-class_Ex4/In-class_Ex4.html
+          - text: In-class Exercise 5
+            href: In-class_Ex/In-class_Ex5/In-class_Ex5.html
+          - text: In-class Exercise 6
+            href: In-class_Ex/In-class_Ex6/In-class_Ex6.html
+          - text: In-class Exercise 7
+            href: In-class_Ex/In-class_Ex7/In-class_Ex7.html
+          - text: In-class Exercise 8
+            href: In-class_Ex/In-class_Ex8/In-class_Ex8.html
+          - text: In-class Exercise 9
+            href: In-class_Ex/In-class_Ex9/In-class_Ex9.html
+          - text: In-class Exercise 10
+            href: In-class_Ex/In-class_Ex10/In-class_Ex10.html
+
       - text: Take-home Exercise
         menu:          
           - text: Take-home Exercise 1
@@ -47,8 +71,6 @@ format:
     theme: minty
     css: styles.css
     toc: true
-    code-fold: true
-    code-summary: "Show the code"
 
 editor: visual
 
