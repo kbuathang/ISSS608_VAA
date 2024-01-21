@@ -101,6 +101,7 @@ glimpse(stu_qqq_SG_v2)
 The code chunk below uses `duplicated()` to check duplicates
 
 ```{r}
+#| eval: false
 #| code-fold: false
 stu_qqq_SG_v2[duplicated(stu_qqq_SG_v2),]
 ```
@@ -490,4 +491,4 @@ The density ridges plots show that students with more advantaged socioeconomic s
 
 In summary,our analysis reveal some key findings. Across all three subjects, there is a similarity in score distributions. However, math consistently achieve the highest scores, while reading tends to have lowest. Additionally, female students tend to have around similar scores, while male students have greater score variability. While private schools tend to have slightly better average scores, public schools have a broader range of scores. This indicates that there is more variation in how well students in public schools perform. Lastly, the most observation is positive correlation between socioeconomic status and academic performance. Students from more advantaged backgrounds consistently achieve better scores. 
 
-
+Recommendation for the further investigation is to include a long term study which involve following a specific group of students from a particular point in time, such as  from elementary school and collecting data on their academic performance at multiple points in their educational journey. This will provide more comprehensive insights and reveal the trend that may not appear in a short term study.
