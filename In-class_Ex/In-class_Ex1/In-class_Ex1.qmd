@@ -38,14 +38,13 @@ stu_qqq <- read_sas("data/cy08msp_stu_qqq.sas7bdat")
 
 ## Filtering Singapore data
 
-The code chunk below uses [`filter()`] to filter country code of Singapore only
+The code chunk below uses \[`filter()`\] to filter country code of Singapore only
 
 ```{r}
 #| eval: false
 stu_qqq_SG <- stu_qqq %>%
   filter(CNT == "SGP")
 ```
-
 
 ```{r}
 #| eval: false
