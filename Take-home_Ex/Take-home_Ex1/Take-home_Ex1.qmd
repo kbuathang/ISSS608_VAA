@@ -44,7 +44,6 @@ The 2022 Programme for International Student Assessment (PISA) data released on 
 The code chunk below uses [`read_sas()`](https://haven.tidyverse.org/reference/read_sas.html) of [haven](https://haven.tidyverse.org/index.html) to import PISA data into R environment.
 
 ```{r}
-#| eval: false
 #| code-fold: false
 stu_qqq <- read_sas("data/cy08msp_stu_qqq.sas7bdat")
 ```
@@ -55,7 +54,6 @@ stu_qqq <- read_sas("data/cy08msp_stu_qqq.sas7bdat")
 Filter Singaporean data by using [`filter()`](https://dplyr.tidyverse.org/reference/filter.html#useful-filter-functions)
 
 ```{r}
-#| eval: false
 #| code-fold: false
 stu_qqq_SG <- stu_qqq %>%
   filter(CNT == "SGP")
@@ -66,7 +64,6 @@ stu_qqq_SG <- stu_qqq %>%
 The code chunk below uses [`select()`](https://dplyr.tidyverse.org/reference/select.html) to include selected variables.
 
 ```{r}
-#| eval: false
 #| code-fold: false
 stu_qqq_SG_v2 <- stu_qqq_SG %>%
   select(CNTSTUID,PV1MATH,PV1READ,PV1SCIE,STRATUM,ST004D01T,ESCS) %>%
@@ -101,7 +98,6 @@ glimpse(stu_qqq_SG_v2)
 The code chunk below uses `duplicated()` to check duplicates
 
 ```{r}
-#| eval: false
 #| code-fold: false
 stu_qqq_SG_v2[duplicated(stu_qqq_SG_v2),]
 ```
@@ -123,7 +119,6 @@ The result shows that there are missing values
 The code chunk below uses `drop_na()` to remove missing values
 
 ```{r}
-#| eval: false
 #| code-fold: false
 stu_qqq_SG_v3 <- stu_qqq_SG_v2 %>%
   drop_na()
@@ -264,12 +259,12 @@ ggplot(stu_qqq_SG_final, aes(x = SCIENCE)) +
            size = 3.5)
 ```
 :::
-::: {.callout-note}
+
+::: callout-note
 The distribution among maths, science, and reading appear to be quite similar.
 
 However, when comparing all three subjects, maths has the highest values for both mean and median, while reading has the lowest mean and median scores.
 :::
-
 
 ## 5.2 Performance and Gender
 
@@ -308,13 +303,14 @@ p3 <- ggplot(data=stu_qqq_SG_final,
 
 ```
 
-::: {.callout-note}
+::: callout-note
 The distributions of performance in each subject between gender are slightly different.
 
 The density plot of females have a higher peak compared to males. This suggests that more females tend to have the similar scores, whereas males' score appear to be more scattered indicating a wider range of performance among them.
 :::
 
 ## 5.3 Performance and School Type
+
 In this section, we will use density graph and boxplots to find insights related to performance and type of schools
 
 ::: panel-tabset
@@ -399,7 +395,7 @@ ggplot(data=stu_qqq_SG_final,
 ```
 :::
 
-::: {.callout-note}
+::: callout-note
 The boxplots of each subject indicate that the average score between private school and public school do not differ. Private schools have slightly higher scores on average. However, there is a notable insights showing that there are more outliers in public schools.
 
 When we examine the density graph, it becomes evident that a higher degree of overlap between two types of schools. This could indicates the greater score diversity within public schools.
@@ -481,7 +477,7 @@ ggplot(data = stu_qqq_SG_final,
 ```
 :::
 
-::: {.callout-note}
+::: callout-note
 The boxplot for each subjects reveal significant difference in performance based on socioeconomic status. Students with higher socioeconomic status tend to achieve better scores. This demonstrates a positive correlation between socioeconomic status and scores. In other words, students from more advantaged backgrounds tend to perform better.
 
 The density ridges plots show that students with more advantaged socioeconomic status cluster around higher score ranges, while those with less advantaged socioeconomic status tend to cluster around lower score ranges. This reaffirms that socioeconomic advantages are associated with better academic outcome.
@@ -489,6 +485,6 @@ The density ridges plots show that students with more advantaged socioeconomic s
 
 # 6 Conclusion
 
-In summary,our analysis reveal some key findings. Across all three subjects, there is a similarity in score distributions. However, math consistently achieve the highest scores, while reading tends to have lowest. Additionally, female students tend to have around similar scores, while male students have greater score variability. While private schools tend to have slightly better average scores, public schools have a broader range of scores. This indicates that there is more variation in how well students in public schools perform. Lastly, the most observation is positive correlation between socioeconomic status and academic performance. Students from more advantaged backgrounds consistently achieve better scores. 
+In summary,our analysis reveal some key findings. Across all three subjects, there is a similarity in score distributions. However, math consistently achieve the highest scores, while reading tends to have lowest. Additionally, female students tend to have around similar scores, while male students have greater score variability. While private schools tend to have slightly better average scores, public schools have a broader range of scores. This indicates that there is more variation in how well students in public schools perform. Lastly, the most observation is positive correlation between socioeconomic status and academic performance. Students from more advantaged backgrounds consistently achieve better scores.
 
-Recommendation for the further investigation is to include a long term study which involve following a specific group of students from a particular point in time, such as  from elementary school and collecting data on their academic performance at multiple points in their educational journey. This will provide more comprehensive insights and reveal the trend that may not appear in a short term study.
+Recommendation for the further investigation is to include a long term study which involve following a specific group of students from a particular point in time, such as from elementary school and collecting data on their academic performance at multiple points in their educational journey. This will provide more comprehensive insights and reveal the trend that may not appear in a short term study.
