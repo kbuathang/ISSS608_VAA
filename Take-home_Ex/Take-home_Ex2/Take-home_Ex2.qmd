@@ -1,0 +1,674 @@
+---
+title: "Take-home Exercise 2: DataVis Makeover"
+date: January 28,2024
+date-modified: "last-modified"
+toc: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+code-fold: true
+code-summary: "Show the code"
+---
+
+# 1 Overview
+
+The purpose of this exercise is to enhance the original visualization created by a classmate. The focus will be based on the improvement in its clarity and aesthetics.
+
+# 2 Data Preparation
+
+## 2.1 Installing R packages
+
+The code chunk below uses `p_load()` of **pacman** package to check if multiple packages are installed in the computer. If they are, then they will be launched into R.
+
+```{r}
+#| code-fold: false
+pacman::p_load(tidyverse, haven, ggrepel, patchwork,ggplot2, 
+               ggthemes, hrbrthemes,dplyr,tidyr,knitr,ggridges)
+```
+
+## 2.2 Importing Data
+
+```{r}
+#| code-fold: false
+stu_qqq <- read_sas("data/cy08msp_stu_qqq.sas7bdat")
+stu_qqq_SG <- stu_qqq %>% 
+  filter(CNT =="SGP")
+
+# Include additional variable which is "school type:STRATUM" 
+Related_math_read_scie_data <- stu_qqq_SG %>%
+  select(contains(c("ID","ST004D01T","math", "read", "scie","ST259Q01JA",
+                    "ST259Q02JA","ST005Q01JA","ST007Q01JA","STRATUM")))
+```
+
+## 2.3 Wrangling Data
+
+```{r}
+#| code-fold: false
+Related_math_read_scie_data <- Related_math_read_scie_data %>%
+  mutate(avg_pvMATH = rowMeans(select(., ends_with("Math")), na.rm = TRUE))
+
+Related_math_read_scie_data <- Related_math_read_scie_data %>%
+  mutate(avg_pvREAD = rowMeans(select(., ends_with("READ")), na.rm = TRUE))
+
+Related_math_read_scie_data <- Related_math_read_scie_data %>%
+  mutate(avg_pvSCIE = rowMeans(select(., ends_with("SCIE")), na.rm = TRUE))
+
+Related_math_read_scie_data <- Related_math_read_scie_data %>% 
+  group_by(CNTSCHID) %>%
+  mutate(avg_pvMATH_school = mean(avg_pvMATH, na.rm = TRUE))
+
+Related_math_read_scie_data <- Related_math_read_scie_data %>% 
+  group_by(CNTSCHID) %>%
+  mutate(avg_pvREAD_school = mean(avg_pvREAD, na.rm = TRUE))
+
+Related_math_read_scie_data <- Related_math_read_scie_data %>% 
+  group_by(CNTSCHID) %>%
+  mutate(avg_pvSCIE_school = mean(avg_pvSCIE, na.rm = TRUE))
+
+```
+
+# 3 Visualization Critique and Remake
+
+## 3.1 Distributions of Maths/Read/Science
+
+### Original Design
+
+The histograms below are designed to reveal the distribution of performance across subjects.
+
+```{r}
+p1 <- ggplot(data=Related_math_read_scie_data, aes(x = avg_pvMATH)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="grey") +
+  geom_vline(aes(xintercept = median(avg_pvMATH)), color = "red", linetype = "dashed") +
+  annotate("text", x = median(Related_math_read_scie_data$avg_pvMATH), y = 30, 
+           label = paste("Median:", round(median(Related_math_read_scie_data$avg_pvMATH), 2)), 
+           vjust = 1, color = "red") +
+  labs(y = "Count")
+
+p2 <- ggplot(data=Related_math_read_scie_data, aes(x = avg_pvREAD)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="grey") +
+  geom_vline(aes(xintercept = median(avg_pvREAD)), color = "red", linetype = "dashed") +
+  annotate("text", x = median(Related_math_read_scie_data$avg_pvREAD), y = 30, 
+           label = paste("Median:", round(median(Related_math_read_scie_data$avg_pvREAD), 2)), 
+           vjust = 1, color = "red") +
+  labs(y = "Count")
+
+p3 <- ggplot(data=Related_math_read_scie_data, aes(x = avg_pvSCIE)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="grey") +
+  geom_vline(aes(xintercept = median(avg_pvSCIE)), color = "red", linetype = "dashed") +
+  annotate("text", x = median(Related_math_read_scie_data$avg_pvSCIE), y = 30, 
+           label = paste("Median:", round(median(Related_math_read_scie_data$avg_pvSCIE), 2)), 
+           vjust = 1, color = "red") +
+  labs(y = "Count")
+
+p1 + p2 + p3 +
+  plot_layout(guides = "collect") +
+  plot_annotation(title = "Distributions of Maths/Reading/Science with Median Lines", tag_levels = "I")
+```
+
+### Critique
+
+In this section, feedback on original visualization is provided along with suggestions for improvement.
+
++------------------------------+---------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| Criteria                     | Original Design                                                                                               | Proposed Design                                                                                                                                |
++==============================+===============================================================================================================+================================================================================================================================================+
+| [**Clarity**]{.underline}    | -   The graph is suitable to reveal the distribution of subjects' scores.                                     | To enhance the visualization in terms of clarity, I would recommend the following:                                                             |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              | -   The axis titles are not labeled clearly.                                                                  | -   Change the main title to be more concise and put in the middle                                                                             |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              | -   The tag (I , II,III) is provided to differentiate each graph but it could be more descriptive.            | -   Change the name of axis titles to be clearer                                                                                               |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              | -   Annotation of the median and the dashed lines are included. This provides more insight about the graph.   | -   Be more specific about the tag by including subjects                                                                                       |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              |                                                                                                               | -   Add the mean and remain the median to indicate skewness.                                                                                   |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              |                                                                                                               | -   Include box plots the show outliers and the overall distribution more effectively                                                          |
++------------------------------+---------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+| [**Aesthetics**]{.underline} | -   The arrangement of three plots is clear and enables to compare distribution across subjects.              | For better aesthetics in the graphs, the following improvements are recommended:                                                               |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              | -   The colors used for the histogram bars and the background are similar. This could reduce visual contrast. | -   Use a different color for each bars to differentiate between subjects and make sure that those colors are contrast with background as well |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              | -   The scales on the axes are not aligned across all graphs.                                                 | -   Align the scale of x-axis and y-axis for all graphs                                                                                        |
+|                              |                                                                                                               |                                                                                                                                                |
+|                              | -   Annotation is overlapped with the bars. This makes them hard to read.                                     | -   Shift annotations to a place where they can be seen clearly                                                                                |
++------------------------------+---------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------+
+
+### Sketch
+
+A sketch for proposed design is shown as below.
+
+![](images/WhatsApp%20Image%202024-01-28%20at%2017.03.48_1d112962.jpg){width="584"}
+
+### Remake
+
+```{r}
+#| fig-width: 18
+#| fig-height: 9
+#| column: body-outset-right
+#math scores
+p1 <- ggplot(data=Related_math_read_scie_data, aes(x = avg_pvMATH)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="#FBD1D5") +
+  coord_cartesian(xlim=c(0,1000),ylim = c(0,1900))+
+  geom_vline(aes(xintercept = median(avg_pvMATH)), color = "red", linetype = "dashed", size = 1) +
+  annotate("text", x = 800, y = 1800,
+           label = paste("Median:", round(median(Related_math_read_scie_data$avg_pvMATH), 2)), 
+           vjust = 1, color = "red",size= 6) +
+  geom_vline(aes(xintercept = mean(avg_pvMATH)), color = "blue", linetype = "dashed", size = 1) +
+  annotate("text", x = 400, y = 1800,
+           label = paste("Mean:", round(mean(Related_math_read_scie_data$avg_pvMATH), 2)), 
+           vjust = 1, color = "blue",size= 6) +
+  labs(y = "No.of Students", x= "Average Math Scores")+
+  ggtitle("I: Math")+
+    geom_boxplot(width = 50,
+               fill = "white", 
+               color = "black",
+               alpha = 0.8,
+               outlier.size = 1.5,
+               position = position_nudge(y = -55))+
+  theme(plot.title = element_text(size = 22),
+  axis.title = element_text(size = 20),
+  axis.text = element_text(size = 18)) 
+
+#Reading scores
+p2 <- ggplot(data=Related_math_read_scie_data, aes(x = avg_pvREAD)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="#E0E994") +
+  coord_cartesian(xlim=c(0,1000),ylim = c(0,1900))+
+  geom_vline(aes(xintercept = median(avg_pvREAD)), color = "red", linetype = "dashed", size = 1) +
+  annotate("text", x = 850, y = 1800,
+           label = paste("Median:", round(median(Related_math_read_scie_data$avg_pvREAD), 2)), 
+           vjust = 1, color = "red",size= 6) +
+  geom_vline(aes(xintercept = mean(avg_pvREAD)), color = "blue", linetype = "dashed", size = 1) +
+  annotate("text", x = 300, y = 1800,
+           label = paste("Mean:", round(mean(Related_math_read_scie_data$avg_pvREAD), 2)), 
+           vjust = 1, color = "blue",size= 6) +
+  labs(y = "No.of Students", x= "Average Reading Scores")+
+  ggtitle("II: Reading")+
+    geom_boxplot(width = 50,
+               fill = "white", 
+               color = "black",
+               alpha = 0.8,
+               outlier.size = 1.5,
+               position = position_nudge(y = -55))+
+  theme(plot.title = element_text(size = 22),
+  axis.title = element_text(size = 20),
+  axis.text = element_text(size = 18))  
+
+#Science scores
+p3 <- ggplot(data=Related_math_read_scie_data, aes(x = avg_pvSCIE)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="#F8DC88") +
+  coord_cartesian(xlim=c(0,1000),ylim = c(0,1900))+
+  geom_vline(aes(xintercept = median(avg_pvSCIE)), color = "red", linetype = "dashed", size = 1) +
+  annotate("text", x = 800, y = 1800,
+           label = paste("Median:", round(median(Related_math_read_scie_data$avg_pvSCIE), 2)), 
+           vjust = 1, color = "red",size= 6) +
+  geom_vline(aes(xintercept = mean(avg_pvSCIE)), color = "blue", linetype = "dashed", size = 1) +
+  annotate("text", x = 350, y = 1800,
+           label = paste("Mean:", round(mean(Related_math_read_scie_data$avg_pvSCIE), 2)), 
+           vjust = 1, color = "blue",size= 6) +
+  labs(y = "No.of Students", x= "Average Science Scores")+
+  ggtitle("III: Science")+
+    geom_boxplot(width = 50,
+               fill = "white", 
+               color = "black",
+               alpha = 0.4,
+               outlier.size = 1.5,
+               position = position_nudge(y = -55))+
+  theme(plot.title = element_text(size = 22),
+  axis.title = element_text(size = 20),
+  axis.text = element_text(size = 18)) 
+
+
+patchwork <- (p1+p2+p3) &
+  plot_annotation(title = "Distributions of Performances across Subjects",
+  theme = theme(plot.title = element_text(size = 26, 
+                                          face = "bold",
+                                          hjust= 0.5, 
+                                          margin = margin(t = 20, b = 20))))
+
+patchwork
+```
+
+::: {.callout-note appearance="simple" icon="false"}
+The remake design displays the title "Distributions of Performances Across Subjects." The x-axis is labeled as "Average \[subject\] Scores," while the y-axis is labeled as "No. of Students." Each graph is tagged with the relevant subject for clearer differentiation. Additionally, annotations and lines of the mean are included to indicate skewness. If the mean is to the left of the median, it implies a left-skewed distribution. Horizontal boxplots are included to present outliers and the overall distribution more effectively. The color bars of each graph are different and contrast well with the background. Both the x-axis and y-axis scales start at zero. Annotations are placed on the top and next to the dashed line. There are no overlap with other components. These improvement make the graph clearer and provide more useful insights of the data.
+:::
+
+## 3.2 The Relationship between Gender and Performances
+
+### Original Design
+
+The histograms below are designed to reveal the relationship between gender and performances across subjects.
+
+```{r}
+p4 <- ggplot(data = Related_math_read_scie_data, aes(x = avg_pvMATH, fill = factor(ST004D01T))) +
+  geom_histogram(bins = 10, color = "grey30", position = "identity", alpha = 0.7) +
+  labs(x = "avg_pvMATH", y = "Count", fill = "Gender") +
+  scale_fill_manual(values = c("skyblue", "pink"))
+
+p5 <- ggplot(data = Related_math_read_scie_data, aes(x = avg_pvREAD, fill = factor(ST004D01T))) +
+  geom_histogram(bins = 10, color = "grey30", position = "identity", alpha = 0.7) +
+  labs(x = "avg_pvREAD", y = "Count", fill = "Gender") +
+  scale_fill_manual(values = c("skyblue", "pink"))
+
+p6 <- ggplot(data = Related_math_read_scie_data, aes(x = avg_pvSCIE, fill = factor(ST004D01T))) +
+  geom_histogram(bins = 10, color = "grey30", position = "identity", alpha = 0.7) +
+  labs(x = "avg_pvSCIE", y = "Count", fill = "Gender") +
+  scale_fill_manual(values = c("skyblue", "pink"))
+
+p4 + p5 + p6 +
+  plot_layout(guides = "collect") +
+  plot_annotation(title = "The Relationship between Gender and Performances", tag_levels = "I")
+
+```
+
+### Critique
+
+In this section, feedback on original visualization is provided along with suggestions for improvement.
+
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Criteria                     | Original Design                                                                                                                                                                  | Proposed Design                                                                                                                                                                                   |
++==============================+==================================================================================================================================================================================+===================================================================================================================================================================================================+
+| [**Clarity**]{.underline}    | -   The main title clear states the purpose the graph.                                                                                                                           | To enhance the visualization in terms of clarity, I would recommend the following:                                                                                                                |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              | -   The graph tends to show the distribution of gender for each subject, but the overlapping bar make it difficult to distinguish between gender.                                | -   Separate the female and male graph but each graph has the overall subject distribution to illustrate which each gender's contribution is better and place it side by side for easy comparison |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              | -   The axis titles are not labeled clearly.                                                                                                                                     | -   Use blue color for male and pink for female to avoid confusion                                                                                                                                |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              | -   The tag (I , II,III) is provided to differentiate each graph but it could be more descriptive.                                                                               | -   Place the main title in the middle                                                                                                                                                            |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              | -   The legend is not identified clearly. Using 1 and 2 may cause a confusion regarding which gender is referred to.                                                             | -   Change the name of axis titles to be clearer                                                                                                                                                  |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              | -   The color coding for gender could lead to misunderstanding. According to the data, "1" refers female and "2" refers male, but the blue color is assigned to 1 and pink to 2. | -   Be more specific about the tag by including subjects                                                                                                                                          |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              |                                                                                                                                                                                  | -   Modify the legend to clearly indicate gender and avoid number indicators that can cause confusion                                                                                             |
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| [**Aesthetics**]{.underline} | -   The overall arrangement of three plots is clear and allow easy comparison.                                                                                                   | For better aesthetics in the graphs, the following improvements are recommended:                                                                                                                  |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              | -   The scales on the axes are not aligned across all graphs.                                                                                                                    | -   Apply gray color for overall subject distribution to differentiate the distribution of males and females more effectively                                                                     |
+|                              |                                                                                                                                                                                  |                                                                                                                                                                                                   |
+|                              |                                                                                                                                                                                  | -   Align the scale of x-axis and y-axis for all graphs                                                                                                                                           |
++------------------------------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+### Sketch
+
+A sketch for proposed design is shown as below.
+
+![](images/WhatsApp%20Image%202024-01-28%20at%2017.03.50_aa8c3f3e.jpg){width="584"}
+
+### Remake
+
+```{r}
+#| fig-width: 15
+#| fig-height: 14
+#| column: body-outset-right
+#Math scores
+Math_data <- Related_math_read_scie_data["avg_pvMATH"]
+p1 <- ggplot(data = Related_math_read_scie_data, 
+       aes(x = avg_pvMATH, fill = factor(ST004D01T))) +
+  geom_histogram(bins = 10, data= Math_data, fill = "#616161", alpha = 0.8) +
+  geom_histogram(bins=10, color="black") + 
+  facet_wrap(~ ST004D01T)+
+  labs(y = "No.of Students", x= "Average Math Scores", fill="Gender")+
+  ggtitle("I: Math")+ 
+  scale_fill_manual(values = c("pink", "skyblue"),
+                    labels = c("Female", "Male"))+
+  coord_cartesian(xlim=c(0,1000),ylim = c(0,1900))+
+  theme(plot.title = element_text(size = 22),
+  axis.title = element_text(size = 20),
+  axis.text = element_text(size = 18),
+  legend.text = element_text(size = 12),  
+  legend.title = element_text(size = 14),
+  strip.text = element_blank())
+
+#Reading scores
+Reading_data <- Related_math_read_scie_data["avg_pvREAD"]
+p2 <-ggplot(data = Related_math_read_scie_data, 
+       aes(x = avg_pvREAD, fill = factor(ST004D01T))) +
+  geom_histogram(bins = 10, data= Reading_data, fill = "#616161", alpha = 0.8) +
+  geom_histogram(bins=10, color="black") + 
+  facet_wrap(~ ST004D01T)+
+  labs(y = "No.of Students", x= "Average Reading Scores", fill="Gender")+
+  ggtitle("II: Reading")+ 
+  scale_fill_manual(values = c("pink", "skyblue"),
+                    labels = c("Female", "Male"))+
+  coord_cartesian(xlim=c(0,1000),ylim = c(0,1900))+
+  theme(plot.title = element_text(size = 22),
+  axis.title = element_text(size = 20),
+  axis.text = element_text(size = 18),
+  legend.text = element_text(size = 12),  
+  legend.title = element_text(size = 14),
+  strip.text = element_blank())
+
+#Science scores
+Science_data <- Related_math_read_scie_data["avg_pvSCIE"]
+p3 <-ggplot(data = Related_math_read_scie_data, 
+       aes(x = avg_pvSCIE, fill = factor(ST004D01T))) +
+  geom_histogram(bins = 10, data= Science_data, fill = "#616161", alpha = 0.8) +
+  geom_histogram(bins=10, color="black") + 
+  facet_wrap(~ ST004D01T)+
+  labs(y = "No.of Students", x= "Average Science Scores", fill="Gender")+
+  ggtitle("III: Science")+ 
+  scale_fill_manual(values = c("pink", "skyblue"),
+                    labels = c("Female", "Male"))+
+  coord_cartesian(xlim=c(0,1000),ylim = c(0,1900))+
+  theme(plot.title = element_text(size = 22),
+  axis.title = element_text(size = 20),
+  axis.text = element_text(size = 18),
+  legend.text = element_text(size = 12),  
+  legend.title = element_text(size = 14),
+  strip.text = element_blank())
+
+patchwork2 <- (p1/p2/p3) &
+  plot_annotation(title = "The Relationship between Gender and Performances",
+  theme = theme(plot.title = element_text(size = 26, 
+                                          face = "bold",
+                                          hjust= 0.5, 
+                                          margin = margin(t = 20, b = 20))))
+
+patchwork2
+```
+
+::: {.callout-note appearance="simple" icon="false"}
+The redesigned plots illustrates the relationship between gender and performance. By placing the graphs for each gender side by side, it becomes easier to compare their performance in each subject. It is clearer and not overlapped. The x-axis is labeled as "Average \[subject\] Scores," while the y-axis is labeled as "No. of Students." Each graph is tagged with the relevant subject for clearer differentiation. Also, the title is shift into the middle. Furthermore, the legend has been modified to represent "1" as female and "2" as male. Also, blue is used represent males and pink for females. Each graph uses a grey color for overall subject distribution to distinguish more effectively. The scales of the x-axis and y-axis are consistently aligned across all graphs. These enhancements make the graph clearer and effectively highlight the performance relationship as the graphs show that the distribution for males in math and science is slightly more right-skewed compared to that of females. This implies that males tend to perform better in these subject than females.
+:::
+
+## 3.3 The Relationship between School and Performances
+
+### Original Design
+
+The scatter plots below are designed to reveal the correlation between school and performances across subjects.
+
+```{r}
+
+p7 <- ggplot(data = Related_math_read_scie_data, 
+             aes(x = CNTSCHID, 
+                 y = avg_pvMATH_school)) +
+  geom_point() +
+  geom_smooth(formula = y~x, method = lm, 
+              size = 0.5) +  
+  labs(x = "School ID", y = "Average PV Maths")
+
+p8 <- ggplot(data = Related_math_read_scie_data, 
+             aes(x = CNTSCHID, 
+                 y = avg_pvREAD_school)) +
+  geom_point() +
+  geom_smooth(formula = y~x, method = lm, 
+              size = 0.5) +
+  labs(x = "School ID", y = "Average PV Read")
+
+p9 <- ggplot(data = Related_math_read_scie_data, 
+             aes(x = CNTSCHID, 
+                 y = avg_pvSCIE_school)) +
+  geom_point() +
+  geom_smooth(formula = y~x, method = lm, 
+              size = 0.5) +  
+  labs(x = "School ID", y = "Average PV Scie")
+
+p7 + p8 + p9 +
+    plot_layout(guides = "collect") +
+  plot_annotation(title = "The Relationship between School and Performances", tag_levels = "I")
+```
+
+### Critique
+
+In this section, feedback on original visualization is provided along with suggestions for improvement.
+
++------------------------------+---------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| Criteria                     | Original Design                                                                                                     | Proposed Design                                                                                                 |
++==============================+=====================================================================================================================+=================================================================================================================+
+| [**Clarity**]{.underline}    | -   The main title clear states the purpose the plot.                                                               | To enhance the visualization in terms of clarity, I would recommend the following:                              |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              | -   The scatter plots does not reveal any explicit insights about the relationship between school and performances. | -   Use another variable which is type of school instead of school ID for better insight about the data         |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              | -   The y-axis title is not labeled clearly.                                                                        | -   Use boxplots instead of scatter plots since there are only two type of schools, so it is easier to compare. |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              | -   The tag (I , II,III) is provided to differentiate each graph but it could be more descriptive.                  | -   Place the main title in the middle                                                                          |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              |                                                                                                                     | -   Change the name of y-axis title to be clearer                                                               |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              |                                                                                                                     | -   Be more specific about the tag by including subjects                                                        |
++------------------------------+---------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+| [**Aesthetics**]{.underline} | -   The x-axis text is overlapped.                                                                                  | For better aesthetics in the graphs, the following improvements are recommended:                                |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              | -   The scales on the axes are not aligned across all graphs.                                                       | -   Align the scale of x-axis and y-axis for all graphs                                                         |
+|                              |                                                                                                                     |                                                                                                                 |
+|                              |                                                                                                                     | -   Use different color for boxplots to identify each school type.                                              |
++------------------------------+---------------------------------------------------------------------------------------------------------------------+-----------------------------------------------------------------------------------------------------------------+
+
+### Sketch
+
+A sketch for proposed design is shown as below.
+
+![](images/WhatsApp%20Image%202024-01-28%20at%2017.03.50_d9e41062.jpg){width="569"}
+
+### Remake
+
+```{r}
+#| fig-width: 22
+#| fig-height: 11
+#| column: body-outset-right
+#Recode school types
+Related_math_read_scie_data <- Related_math_read_scie_data %>%
+  mutate(STRATUM = recode(STRATUM,
+                         "SGP01" = "Public School",
+                         "SGP03" = "Private School"))
+
+#Math scores
+p1 <- ggplot(data=Related_math_read_scie_data, 
+       aes(y = avg_pvMATH, x=STRATUM,fill=STRATUM)) +
+  geom_boxplot()+
+  coord_cartesian(ylim = c(0,900))+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = c("#F9B757", "#AFD583"),
+                    labels = c("Private School", "Public School"))+
+  labs(y = "Average Math Scores", x= "School Type", fill="School Type")+
+  ggtitle("I: Math")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=4)+
+    theme(plot.title = element_text(size = 26),
+          axis.title.y = element_text(size = 24),
+          axis.title.x = element_blank(),
+          axis.text= element_text(size = 24))
+
+#Reading scores
+p2 <- ggplot(data=Related_math_read_scie_data, 
+       aes(y = avg_pvREAD, x=STRATUM,fill=STRATUM)) +
+  geom_boxplot()+
+  coord_cartesian(ylim = c(0,900))+
+  theme(legend.position = "none")+
+  scale_fill_manual(values = c("#F9B757", "#AFD583"),
+                    labels = c("Private School", "Public School"))+
+  labs(y = "Average Reading Scores", x= "School Type", fill="School Type")+
+  ggtitle("II: Reading")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=4)+
+    theme(plot.title = element_text(size = 26),
+          axis.title.y = element_text(size = 24),
+          axis.title.x = element_blank(),
+          axis.text= element_text(size = 24))
+
+#Science scores
+p3 <- ggplot(data=Related_math_read_scie_data, 
+       aes(y = avg_pvSCIE, x=STRATUM,fill=STRATUM)) +
+  geom_boxplot()+
+  coord_cartesian(ylim = c(0,900))+
+  scale_fill_manual(values = c("#F9B757", "#AFD583"),
+                    labels = c("Private School", "Public School"))+
+  labs(y = "Average Science Scores", x= "School Type", fill="School Type")+
+  ggtitle("III: Science")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=4)+
+    theme(plot.title = element_text(size = 26),
+          axis.title.y = element_text(size = 24),
+          axis.title.x = element_blank(),
+          axis.text= element_text(size = 24),
+          legend.text = element_text(size = 18),  
+          legend.title = element_text(size = 18),
+          legend.key.size = unit(1, "cm"))
+
+patchwork3 <- (p1+p2+p3) &
+  plot_annotation(title = "The Relationship between School and Performances",
+  theme = theme(plot.title = element_text(size = 30, 
+                                          face = "bold",
+                                          hjust= 0.5, 
+                                          margin = margin(t = 20, b = 20))))
+patchwork3
+```
+
+::: {.callout-note appearance="simple" icon="false"}
+The redesigned plots illustrates the relationship between school type and performance. Instead of school ID, type of school variable is used. Moreover, the boxplots are used instead of scatter plots because there are only two school type. The y-axis is labeled as "Average \[subject\] Scores", and x-axis is no longer overlapped. Each graph is tagged with the relevant subject for clearer differentiation, and the title is shift to the middle. Furthermore, the scales of the x-axis and y-axis are consistently aligned across all graph and different colors are used to differentiate school type. These enhancements provide more explicit insights about the relationship between school and performances. It clearly reveals that private school tend to performance better than public school.
+:::
+
+## 3.4 The Relationship between Socioeconomic Status and Performances
+
+### Original Design
+
+The scatter plots below are designed to reveal the relationship between socioeconomic status and performances across subjects.
+
+```{r}
+Related_math_read_scie_data <- Related_math_read_scie_data %>%
+  mutate(Parent_Edu_level = ST005Q01JA + ST007Q01JA)
+
+df <- Related_math_read_scie_data
+
+ggplot(df, aes(x = Parent_Edu_level)) +
+  geom_point(aes(y = avg_pvMATH, color = "Math"), na.rm = TRUE) +
+  geom_smooth(aes(y = avg_pvMATH, color = "Math"), method = "lm", se = FALSE, na.rm = TRUE) +
+  geom_point(aes(y = avg_pvREAD, color = "Read"), na.rm = TRUE) +
+  geom_smooth(aes(y = avg_pvREAD, color = "Read"), method = "lm", se = FALSE, na.rm = TRUE) +
+  geom_point(aes(y = avg_pvSCIE, color = "Science"), na.rm = TRUE) +
+  geom_smooth(aes(y = avg_pvSCIE, color = "Science"), method = "lm", se = FALSE, na.rm = TRUE) +
+  labs(title = "Relationship between Performance and Socioeconomic Status",
+       x = "Socioeconomic Status (Lower values indicate higher status)",
+       y = "Average PV Score") +
+  scale_color_manual(values = c("Math" = "blue", "Read" = "green", "Science" = "red")) +
+  theme_minimal()
+
+```
+
+### Critique
+
+In this section, feedback on original visualization is provided along with suggestions for improvement.
+
++------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------+
+| Criteria                     | Original Design                                                                                                                                                                                                   | Proposed Design                                                                    |
++==============================+===================================================================================================================================================================================================================+====================================================================================+
+| [**Clarity**]{.underline}    | -   In this case, the scatter plots is not suitable to show the relationship between socioeconomic status and performances across different subjects. The overall plots make viewers confuse what is the purpose. | To enhance the visualization in terms of clarity, I would recommend the following: |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              | -   There is a lot of overlapping which lead to confusion                                                                                                                                                         | -   Replace scatter plots with boxplots for clearer insights                       |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              |                                                                                                                                                                                                                   | -   Separate the graphs by each subject to avoid confusion                         |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              |                                                                                                                                                                                                                   | -   Include sepecific title for each graph for clearer differentiation             |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              |                                                                                                                                                                                                                   | -   Include the mean into boxplots so it is easier to see the trend                |
++------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------+
+| [**Aesthetics**]{.underline} | -   Different colors are used to differentiate between subjects.                                                                                                                                                  | For better aesthetics in the graphs, the following improvements are recommended:   |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              |                                                                                                                                                                                                                   | -   Use different colors for boxplots to identify each subject                     |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              |                                                                                                                                                                                                                   | -   Use red color for the mean to make it clear                                    |
+|                              |                                                                                                                                                                                                                   |                                                                                    |
+|                              |                                                                                                                                                                                                                   | -   Align the scale of x-axis and y-axis for all graphs                            |
++------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+------------------------------------------------------------------------------------+
+
+### Sketch
+
+A sketch for proposed design is shown as below.
+
+![](images/WhatsApp Image 2024-01-28 at 17.28.10_4d23ea17.jpg){width="554"}
+
+### Remake
+
+```{r}
+#| fig-width: 20
+#| fig-height: 22
+#| column: body-outset-right
+#Math scores
+p1 <- ggplot(data=Related_math_read_scie_data, 
+       aes(y = avg_pvMATH, x=factor(Parent_Edu_level),fill=factor(Parent_Edu_level))) +
+  geom_boxplot(fill="#FBD1D5")+
+  coord_cartesian(ylim = c(0,900))+
+  theme(legend.position = "none")+
+  labs(y = "Average Math Scores", x= "Socioeconomic Status", fill="Socioeconomic Status")+
+  ggtitle("I: Math")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=4)+
+    theme(plot.title = element_text(size = 26),
+          axis.title = element_text(size = 24),
+          axis.text= element_text(size = 24))
+#Reading scores
+p2 <- ggplot(data=Related_math_read_scie_data, 
+       aes(y = avg_pvREAD, x=factor(Parent_Edu_level),fill=factor(Parent_Edu_level))) +
+  geom_boxplot(fill="#E0E994")+
+  coord_cartesian(ylim = c(0,900))+
+  theme(legend.position = "none")+
+  labs(y = "Average Reading Scores", x= "Socioeconomic Status", fill="Socioeconomic Status")+
+  ggtitle("II: Reading")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=4)+
+    theme(plot.title = element_text(size = 26),
+          axis.title = element_text(size = 24),
+          axis.text= element_text(size = 24))
+
+#Science scores
+p3 <- ggplot(data=Related_math_read_scie_data, 
+       aes(y = avg_pvSCIE, x=factor(Parent_Edu_level),fill=factor(Parent_Edu_level))) +
+  geom_boxplot(fill="#F8DC88")+
+  coord_cartesian(ylim = c(0,900))+
+  theme(legend.position = "none")+
+  labs(y = "Average Science Scores", x= "Socioeconomic Status", fill="Socioeconomic Status")+
+  ggtitle("III: Science")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=4)+
+    theme(plot.title = element_text(size = 26),
+          axis.title = element_text(size = 24),
+          axis.text= element_text(size = 24))
+
+patchwork4 <- (p1/p2/p3) &
+  plot_annotation(title = "The Relationship between Socioeconomic Status and Performances",
+  theme = theme(plot.title = element_text(size = 30, 
+                                          face = "bold",
+                                          hjust= 0.5, 
+                                          margin = margin(t = 20, b = 20))))
+
+patchwork4
+```
+
+::: {.callout-note appearance="simple" icon="false"}
+The redesigned plots illustrates the relationship between socioeconomic status and performance. Boxplots is used instead of scatter plots for clarity. Also, the plots are separated based on subject and include the title. Moreover, the mean is included to clearly show the trend. Different colors is used for boxplots, and the mean is represented in red for visibility. This improvement reduce overlap and enhance differentiation between subjects. As a result, the plots reveal more clearer insights about the relationship. It indicates that students from higher socioeconomic status tend to perform better than those from the lower status.
+:::
+
+# 4 Learning Points
+
+Take-home Exercises 2 provided an opportunity for self-reflection on the strengths and areas that need to be improved for my take-home exercise 1. This exercise allowed me to see different perspectives and various analytic approaches on how to come up with the visualization that I may not consider before. There is no single pattern for data visualization. In summary, this exercise broadened my understanding and made me know more how to visualize data more effectively. I will definitely apply what I learned from my classmates in the future work.
