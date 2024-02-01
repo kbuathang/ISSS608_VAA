@@ -1,0 +1,49 @@
+---
+title: "Hands-on Exercise 4b: Visual Statistical Analysis"
+date: February 1,2024
+date-modified: "last-modified"
+toc: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+code-fold: true
+code-summary: "Show the code"
+---
+# 1 Getting Started
+
+In this exercise, we will use the following our R packages.
+
+-   [tidyverse](https://www.tidyverse.org/), a family of R packages for data science process,
+
+-   [ggstatsplot ](https://indrajeetpatil.github.io/ggstatsplot/), a ggplot2 extension created graphics with details from statistical tests included in the information-rich plots themselves.
+
+
+::: panel-tabset
+## Loading R package
+
+The code chunk below uses `p_load()` of pacman package to check if these packages are installed in the computer and load them onto your working R environment.
+
+```{r}
+#| code-fold: false
+pacman::p_load(ggstatsplot, tidyverse) 
+```
+
+## Importing Data
+
+The code chunk below imports exam_data.csv into R environment by using `read_csv()` function of [readr](https://readr.tidyverse.org/) package.
+
+```{r}
+#| code-fold: false
+exam <- read.csv("data/Exam_data.csv")
+```
+
+## Summarizing Data
+
+The code chunk below uses `summary()`to summarize the data.
+
+```{r}
+#| code-fold: false
+summary(exam)
+```
+:::

@@ -600,7 +600,7 @@ In this section, feedback on original visualization is provided along with sugge
 
 A sketch for proposed design is shown as below.
 
-![](images/WhatsApp Image 2024-01-28 at 17.28.10_4d23ea17.jpg){width="554"}
+![](images/WhatsApp%20Image%202024-01-28%20at%2017.28.10_4d23ea17.jpg){width="554"}
 
 ### Remake
 

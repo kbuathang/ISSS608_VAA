@@ -1,0 +1,485 @@
+---
+title: "Hands-on Exercise 4a: Visualising Distribution"
+date: February 1,2024
+date-modified: "last-modified"
+toc: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+code-fold: true
+code-summary: "Show the code"
+---
+
+# 1 Getting Started
+
+In this exercise, we will use the following our R packages.
+
+-   [tidyverse](https://www.tidyverse.org/), a family of R packages for data science process,
+
+-   [ggridges](https://wilkelab.org/ggridges/), a ggplot2 extension specially designed for plotting ridgeline plots, and
+
+-   **ggdist** for visualizing distribution and uncertainty.
+
+::: panel-tabset
+## Loading R package
+
+The code chunk below uses `p_load()` of pacman package to check if these packages are installed in the computer and load them onto your working R environment.
+
+```{r}
+#| code-fold: false
+pacman::p_load(ggdist, ggridges, ggthemes,
+               colorspace, tidyverse) 
+```
+
+## Importing Data
+
+The code chunk below imports exam_data.csv into R environment by using `read_csv()` function of [readr](https://readr.tidyverse.org/) package.
+
+```{r}
+#| code-fold: false
+exam <- read.csv("data/Exam_data.csv")
+```
+
+## Summarizing Data
+
+The code chunk below uses `summary()`to summarize the data.
+
+```{r}
+#| code-fold: false
+summary(exam)
+```
+:::
+
+# 2 Visualizing Distribution with Ridgeline Plot
+
+*Ridgeline plot* (sometimes called *Joyplot*) is a data visualization technique for revealing the distribution of a numeric value for several groups. Distribution is shown in histograms or density plots and all are aligned to the same horizontal scale and presented with a slight overlap.
+
+## 2.1 Plotting ridgeline graph: ggridges method
+
+In this section, we will plot ridgeline plot by using [ggridges]{.underline} package.
+
+There two main geom to plot ridgeline plots:
+
+-   [geom_ridgeline()](https://wilkelab.org/ggridges/reference/geom_ridgeline.html), and
+
+-   [geom_density_ridges()](https://wilkelab.org/ggridges/reference/geom_density_ridges.html).
+
+The below plot is using `geom_density_ridges()`
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam, 
+       aes(x = ENGLISH, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("pink", .5),
+    color = "black"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam, 
+       aes(x = ENGLISH, 
+           y = CLASS)) +
+  geom_density_ridges(
+    scale = 3,
+    rel_min_height = 0.01,
+    bandwidth = 3.4,
+    fill = lighten("pink", .5),
+    color = "black"
+  ) +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+    ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+:::
+
+## 2.2 Varying fill colors along the x axis
+
+Sometimes we would like to have the area under a ridgeline filled with colors that vary in some form along the x axis. This can be done using either [geom_ridgeline_gradient()](https://wilkelab.org/ggridges/reference/geom_ridgeline_gradient.html) or [geom_density_ridges_gradient()](https://wilkelab.org/ggridges/reference/geom_ridgeline_gradient.html). Both geoms work like `geom_ridgeline()` and `geom_density_ridges()`, except that they allow for varying fill colors. However, they do not allow for alpha transparency in the fill.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam, 
+       aes(x = ENGLISH, 
+           y = CLASS,
+           fill = stat(x))) +
+  geom_density_ridges_gradient(
+    scale = 3,
+    rel_min_height = 0.01) +
+  scale_fill_viridis_c(name = "Temp. [F]",
+                       option = "F") +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+  ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam, 
+       aes(x = ENGLISH, 
+           y = CLASS,
+           fill = stat(x))) +
+  geom_density_ridges_gradient(
+    scale = 3,
+    rel_min_height = 0.01) +
+  scale_fill_viridis_c(name = "Temp. [F]",
+                       option = "F") +
+  scale_x_continuous(
+    name = "English grades",
+    expand = c(0, 0)
+  ) +
+  scale_y_discrete(name = NULL, expand = expansion(add = c(0.2, 2.6))) +
+  theme_ridges()
+```
+:::
+
+## 2.3 Mapping the probabilities directly onto color
+
+gridges package also provides a stat function called [stat_density_ridges()](https://wilkelab.org/ggridges/reference/stat_density_ridges.html) that replaces [stat_density()](https://ggplot2.tidyverse.org/reference/geom_density.html) of ggplot2.
+
+The below figure is plotted by mapping the probabilities calculated by using `stat(ecdf)` which represent the empirical cumulative density function for the distribution of English score.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = 0.5 - abs(0.5-stat(ecdf)))) +
+  stat_density_ridges(geom = "density_ridges_gradient", 
+                      calc_ecdf = TRUE) +
+  scale_fill_viridis_c(name = "Tail probability",
+                       direction = 1) +
+  theme_ridges()
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = 0.5 - abs(0.5-stat(ecdf)))) +
+  stat_density_ridges(geom = "density_ridges_gradient", 
+                      calc_ecdf = TRUE) +
+  scale_fill_viridis_c(name = "Tail probability",
+                       direction = 1) +
+  theme_ridges()
+```
+:::
+
+::: callout-important
+## Important
+
+It is important include the argument `calc_ecdf = TRUE` in `stat_density_ridges()`.
+:::
+
+## 2.4 Ridgeline plots with quantile lines
+
+By using `geom_density_ridges_gradient()`, we can color the ridgeline plot by quantile, via the calculated `stat(quantile)` aesthetic as shown in the figure below.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") +
+  theme_ridges()
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = 4,
+    quantile_lines = TRUE) +
+  scale_fill_viridis_d(name = "Quartiles") +
+  theme_ridges()
+```
+:::
+
+Instead of using number to define the quantiles, we can also specify quantiles by cut points such as 2.5% and 97.5% tails to colour the ridgeline plot as shown in the figure below.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = c(0.025, 0.975)
+    ) +
+  scale_fill_manual(
+    name = "Probability",
+    values = c("red", "#A0A0A0A0", "purple"),
+    labels = c("(0, 0.025]", "(0.025, 0.975]", "(0.975, 1]")
+  ) +
+  theme_ridges()
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam,
+       aes(x = ENGLISH, 
+           y = CLASS, 
+           fill = factor(stat(quantile))
+           )) +
+  stat_density_ridges(
+    geom = "density_ridges_gradient",
+    calc_ecdf = TRUE, 
+    quantiles = c(0.025, 0.975)
+    ) +
+  scale_fill_manual(
+    name = "Probability",
+    values = c("red", "#A0A0A0A0", "purple"),
+    labels = c("(0, 0.025]", "(0.025, 0.975]", "(0.975, 1]")
+  ) +
+  theme_ridges()
+```
+:::
+
+# 3 Visualizing Distribution with Raincloud Plot
+
+*Raincloud Plot* is a data visualisation techniques that produces a half-density to a distribution plot. The raincloud (half-density) plot enhances the traditional box-plot by highlighting multiple modalities (an indicator that groups may exist). The boxplot does not show where densities are clustered, but the raincloud plot does!
+
+In this section, We will create a raincloud plot by using functions provided by **ggdist** and ggplot2 packages.
+
+## 3.1 Plotting a Half Eye graph
+
+We will plot a Half-Eye graph by using [stat_halfeye()](https://mjskay.github.io/ggdist/reference/stat_halfeye.html) of **ggdist** package.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue")
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_color = NA,
+               fill = "lightblue")
+```
+
+::: callout-tip
+## Things to learn from the code chunk above
+
+We remove the slab interval by setting .width = 0 and point_color = NA.
+:::
+:::
+
+## 3.2 Adding the boxplot with `geom_boxplot()`
+
+To add the second geometry layer, we will use `geom_boxplot()` of ggplot2. This produces a narrow boxplot. We reduce the width and adjust the opacity.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue") +
+  geom_boxplot(width = .20,
+               outlier.shape = NA)
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue") +
+  geom_boxplot(width = .20,
+               outlier.shape = NA)
+```
+:::
+
+## 3.3 Adding the Dot Plots with `stat_dots()`
+
+To add the third geometry layer, we will use [stat_dots()](https://mjskay.github.io/ggdist/reference/stat_dots.html) of ggdist package. This produces a half-dotplot, which is similar to a histogram that indicates the number of samples (number of dots) in each bin. We select side = “left” to indicate we want it on the left-hand side.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue") +
+  geom_boxplot(width = .20,
+               outlier.shape = NA) +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue") +
+  geom_boxplot(width = .20,
+               outlier.shape = NA) +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2)
+```
+:::
+
+## 3.4 Finishing touch
+
+[coord_flip()](https://ggplot2.tidyverse.org/reference/coord_flip.html) of ggplot2 package will be used to flip the raincloud chart horizontally to give it the raincloud appearance. At the same time, `theme_economist_white()` of ggthemes package is used to give the raincloud chart a professional publishing standard look.
+
+::: panel-tabset
+## Plot
+
+```{r}
+#| echo: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue") +
+  geom_boxplot(width = .20,
+               outlier.shape = NA) +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2) +
+  coord_flip() +
+  theme_economist_white()
+```
+
+## Code chunk
+
+```{r}
+#| eval: false 
+#| code-fold: false
+ggplot(exam, 
+       aes(x = RACE, 
+           y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA,
+               fill = "lightblue") +
+  geom_boxplot(width = .20,
+               outlier.shape = NA) +
+  stat_dots(side = "left", 
+            justification = 1.2, 
+            binwidth = .5,
+            dotsize = 2) +
+  coord_flip() +
+  theme_economist_white()
+```
+:::
