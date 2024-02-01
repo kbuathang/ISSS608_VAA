@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.450">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2024-02-01">
+
+<title>ISSS608 - Hands-on Exercise 4b: Visual Statistical Analysis</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">ISSS608</span>
+    </a>
+  </div>
+            <div id="quarto-search" class="" title="Search"></div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-hands-on-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Hands-on Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-hands-on-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex1/Hands-on_Ex1.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex2/Hands-on_Ex2.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3a.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 3a</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3b.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 3b</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4a.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 4a</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4b.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 4b</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4c.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 4c</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex4/Hands-on_Ex4d.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 4d</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex6/Hands-on_Ex6.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex7/Hands-on_Ex7.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex8/Hands-on_Ex8.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex9/Hands-on_Ex9.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex/Hands-on_Ex10/Hands-on_Ex10.html" rel="" target="">
+ <span class="dropdown-text">Hands-on Exercise 10</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">In-class Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex1/In-class_Ex1.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex2/In-class_Ex2.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex3/In-class_Ex3.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex4/In-class_Ex4.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 4</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex5/In-class_Ex5.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 5</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex6/In-class_Ex6.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 6</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex7/In-class_Ex7.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 7</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex8/In-class_Ex8.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 8</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex9/In-class_Ex9.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 9</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex10/In-class_Ex10.html" rel="" target="">
+ <span class="dropdown-text">In-class Exercise 10</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercise" role="button" data-bs-toggle="dropdown" aria-expanded="false" rel="" target="">
+ <span class="menu-text">Take-home Exercise</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercise">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex1/Take-home_Ex1.html" rel="" target="">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex2/Take-home_Ex2.html" rel="" target="">
+ <span class="dropdown-text">Take-home Exercise 2</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex3/Take-home_Ex3.html" rel="" target="">
+ <span class="dropdown-text">Take-home Exercise 3</span></a>
+  </li>  
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex4/Take-home_Ex4.html" rel="" target="">
+ <span class="dropdown-text">Take-home Exercise 4</span></a>
+  </li>  
+    </ul>
+  </li>
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../index.html" rel="" target="">
+ <span class="menu-text">Home</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html" rel="" target="">
+ <span class="menu-text">About</span></a>
+  </li>  
+</ul>
+            <div class="quarto-navbar-tools">
+</div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#visual-statistical-analysis-with-ggstatsplot" id="toc-visual-statistical-analysis-with-ggstatsplot" class="nav-link active" data-scroll-target="#visual-statistical-analysis-with-ggstatsplot">1 Visual Statistical Analysis with ggstatsplot</a></li>
+  <li><a href="#getting-started" id="toc-getting-started" class="nav-link" data-scroll-target="#getting-started">2 Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#one-sample-test-gghistostats-method" id="toc-one-sample-test-gghistostats-method" class="nav-link" data-scroll-target="#one-sample-test-gghistostats-method">2.1 One-sample test: <em>gghistostats()</em> method</a></li>
+  <li><a href="#unpacking-the-bayes-factor" id="toc-unpacking-the-bayes-factor" class="nav-link" data-scroll-target="#unpacking-the-bayes-factor">2.2 Unpacking the Bayes Factor</a></li>
+  <li><a href="#how-to-interpret-bayes-factor" id="toc-how-to-interpret-bayes-factor" class="nav-link" data-scroll-target="#how-to-interpret-bayes-factor">2.3 How to interpret Bayes Factor</a></li>
+  <li><a href="#two-sample-mean-test-ggbetweenstats" id="toc-two-sample-mean-test-ggbetweenstats" class="nav-link" data-scroll-target="#two-sample-mean-test-ggbetweenstats">2.4 Two-sample mean test: <em>ggbetweenstats()</em></a></li>
+  <li><a href="#oneway-anova-test-ggbetweenstats-method" id="toc-oneway-anova-test-ggbetweenstats-method" class="nav-link" data-scroll-target="#oneway-anova-test-ggbetweenstats-method">2.5 Oneway ANOVA Test: <em>ggbetweenstats()</em> method</a></li>
+  <li><a href="#significant-test-of-correlation-ggscatterstats" id="toc-significant-test-of-correlation-ggscatterstats" class="nav-link" data-scroll-target="#significant-test-of-correlation-ggscatterstats">2.6 Significant Test of Correlation: <em>ggscatterstats()</em></a></li>
+  <li><a href="#significant-test-of-association-depedence-ggbarstats-methods" id="toc-significant-test-of-association-depedence-ggbarstats-methods" class="nav-link" data-scroll-target="#significant-test-of-association-depedence-ggbarstats-methods">2.7 Significant Test of Association (Depedence) : <em>ggbarstats()</em> methods</a></li>
+  </ul></li>
+  <li><a href="#visualizing-models" id="toc-visualizing-models" class="nav-link" data-scroll-target="#visualizing-models">3 Visualizing Models</a></li>
+  <li><a href="#getting-started-1" id="toc-getting-started-1" class="nav-link" data-scroll-target="#getting-started-1">4 Getting Started</a>
+  <ul class="collapse">
+  <li><a href="#multiple-regression-model-using-lm" id="toc-multiple-regression-model-using-lm" class="nav-link" data-scroll-target="#multiple-regression-model-using-lm">4.1 Multiple Regression Model using lm()</a></li>
+  <li><a href="#model-diagnostic-checking-for-multicolinearity" id="toc-model-diagnostic-checking-for-multicolinearity" class="nav-link" data-scroll-target="#model-diagnostic-checking-for-multicolinearity">4.2 Model Diagnostic: checking for multicolinearity</a></li>
+  <li><a href="#model-diagnostic-checking-normality-assumption" id="toc-model-diagnostic-checking-normality-assumption" class="nav-link" data-scroll-target="#model-diagnostic-checking-normality-assumption">4.3 Model Diagnostic: checking normality assumption</a></li>
+  <li><a href="#model-diagnostic-check-model-for-homogeneity-of-variances" id="toc-model-diagnostic-check-model-for-homogeneity-of-variances" class="nav-link" data-scroll-target="#model-diagnostic-check-model-for-homogeneity-of-variances">4.4 Model Diagnostic: Check model for homogeneity of variances</a></li>
+  <li><a href="#model-diagnostic-complete-check" id="toc-model-diagnostic-complete-check" class="nav-link" data-scroll-target="#model-diagnostic-complete-check">4.5 Model Diagnostic: Complete check</a></li>
+  <li><a href="#visualising-regression-parameters-see-methods" id="toc-visualising-regression-parameters-see-methods" class="nav-link" data-scroll-target="#visualising-regression-parameters-see-methods">4.6 Visualising Regression Parameters: see methods</a></li>
+  <li><a href="#visualizing-regression-parameters-ggcoefstats-methods" id="toc-visualizing-regression-parameters-ggcoefstats-methods" class="nav-link" data-scroll-target="#visualizing-regression-parameters-ggcoefstats-methods">4.7 Visualizing Regression Parameters: <em>ggcoefstats()</em> methods</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Hands-on Exercise 4b: Visual Statistical Analysis</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">February 1, 2024</p>
+    </div>
+  </div>
+  
+    <div>
+    <div class="quarto-title-meta-heading">Modified</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date-modified">February 1, 2024</p>
+    </div>
+  </div>
+    
+  </div>
+  
+
+</header>
+
+<section id="visual-statistical-analysis-with-ggstatsplot" class="level1">
+<h1>1 Visual Statistical Analysis with ggstatsplot</h1>
+<p>In this section, we will use the following our R packages.</p>
+<ul>
+<li><p><a href="https://www.tidyverse.org/">tidyverse</a>, a family of R packages for data science process,</p></li>
+<li><p><a href="https://indrajeetpatil.github.io/ggstatsplot/">ggstatsplot</a>, a ggplot2 extension created graphics with details from statistical tests included in the information-rich plots themselves.</p>
+<ul>
+<li><p>To provide alternative statistical inference methods by default.</p></li>
+<li><p>To follow best practices for statistical reporting. For all statistical tests reported in the plots, the default template abides by the <a href="https://my.ilstu.edu/~jhkahn/apastats.html">APA</a> gold standard for statistical reporting</p></li>
+</ul></li>
+</ul>
+</section>
+<section id="getting-started" class="level1">
+<h1>2 Getting Started</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Loading R package</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Importing Data</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-3" role="tab" aria-controls="tabset-1-3" aria-selected="false">Summarizing Data</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>The code chunk below uses <code>p_load()</code> of pacman package to check if these packages are installed in the computer and load them onto your working R environment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(ggstatsplot, tidyverse) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>The code chunk below imports exam_data.csv into R environment by using <code>read_csv()</code> function of <a href="https://readr.tidyverse.org/">readr</a> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>exam <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="st">"data/Exam_data.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-1-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-3-tab">
+<p>The code chunk below uses <code>stat()</code>to summarize the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stat</span>(exam)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            ID CLASS GENDER    RACE ENGLISH MATHS SCIENCE
+1   Student321    3I   Male   Malay      21     9      15
+2   Student305    3I Female   Malay      24    22      16
+3   Student289    3H   Male Chinese      26    16      16
+4   Student227    3F   Male Chinese      27    77      31
+5   Student318    3I   Male   Malay      27    11      25
+6   Student306    3I Female   Malay      31    16      16
+7   Student313    3I   Male Chinese      31    21      25
+8   Student316    3I   Male   Malay      31    18      27
+9   Student312    3I   Male   Malay      33    19      15
+10  Student297    3H   Male  Indian      34    49      37
+11  Student314    3I   Male Chinese      34    39      42
+12  Student278    3H Female   Malay      36    35      22
+13  Student302    3I Female Chinese      36    23      32
+14  Student323    3I   Male Chinese      36    36      36
+15  Student296    3H   Male Chinese      37    49      35
+16  Student311    3I Female Chinese      38    30      45
+17  Student304    3I Female   Malay      39    21      21
+18  Student307    3I Female   Malay      39    24      35
+19  Student259    3G   Male   Malay      40    54      26
+20  Student273    3H Female   Malay      40    36      24
+21  Student292    3H   Male   Malay      40    40      31
+22  Student303    3I Female   Malay      40    20      32
+23  Student177    3E   Male Chinese      41    71      40
+24  Student253    3G   Male  Others      41    51      37
+25  Student294    3H   Male   Malay      41    32      26
+26  Student287    3H   Male   Malay      42    32      27
+27  Student293    3H   Male   Malay      42    37      23
+28  Student290    3H   Male   Malay      43    30      31
+29  Student295    3H   Male  Indian      43    35      38
+30  Student319    3I   Male  Indian      43    25      24
+31  Student309    3I Female   Malay      44    24      24
+32  Student315    3I   Male   Malay      44    19      35
+33  Student288    3H   Male Chinese      45    50      27
+34  Student301    3I Female   Malay      45    32      30
+35  Student248    3G   Male Chinese      46    55      17
+36  Student277    3H Female   Malay      46    31      34
+37  Student171    3E Female Chinese      48    56      49
+38  Student324    3I   Male Chinese      48    41      41
+39  Student258    3G   Male   Malay      49    30      32
+40  Student282    3H Female Chinese      49    44      19
+41  Student298    3H   Male   Malay      49    41      32
+42  Student317    3I   Male   Malay      49    34      31
+43  Student276    3H Female   Malay      50    35      40
+44  Student286    3H   Male   Malay      50    56      36
+45  Student310    3I Female   Malay      50    58      50
+46  Student215    3F Female Chinese      51    74      54
+47  Student200    3F Female Chinese      52    71      47
+48  Student202    3F Female Chinese      52    55      39
+49  Student264    3G   Male  Indian      52    42      16
+50  Student322    3I   Male   Malay      52    58      41
+51  Student117    3C   Male Chinese      53    90      46
+52  Student199    3F Female Chinese      53    77      57
+53  Student251    3G   Male Chinese      53    51      45
+54  Student320    3I   Male   Malay      53    25      48
+55  Student188    3E   Male Chinese      54    65      40
+56  Student231    3F   Male Chinese      54    78      60
+57  Student255    3G   Male Chinese      54    54      32
+58  Student262    3G   Male   Malay      54    59      45
+59  Student265    3G   Male Chinese      54    38      46
+60  Student271    3H Female Chinese      54    52      52
+61  Student272    3H Female   Malay      54    33      37
+62  Student279    3H Female  Indian      54    48      53
+63  Student283    3H Female   Malay      55    43      45
+64  Student284    3H Female Chinese      55    56      45
+65  Student241    3G Female   Malay      56    52      57
+66  Student261    3G   Male   Malay      56    37      34
+67  Student291    3H   Male   Malay      56    44      46
+68  Student299    3H   Male   Malay      56    52      59
+69  Student198    3F Female Chinese      57    74      62
+70  Student201    3F Female Chinese      57    67      67
+71  Student212    3F Female   Malay      57    63      55
+72  Student226    3F   Male   Malay      57    75      58
+73  Student240    3G Female   Malay      57    49      45
+74  Student266    3G Female Chinese      57    47      64
+75  Student274    3H Female   Malay      57    50      39
+76  Student179    3E   Male Chinese      58    69      57
+77  Student185    3E   Male   Malay      58    78      66
+78  Student224    3F   Male   Malay      58    64      60
+79  Student280    3H Female   Malay      58    47      47
+80  Student281    3H Female  Indian      58    40      46
+81  Student163    3E Female   Malay      59    58      36
+82  Student225    3F   Male   Malay      59    74      45
+83  Student115    3C   Male Chinese      60    72      52
+84  Student203    3F Female Chinese      60    75      61
+85  Student246    3G Female   Malay      60    43      44
+86  Student263    3G   Male  Indian      60    68      63
+87  Student082    3C Female Chinese      61    85      68
+88  Student114    3C   Male Chinese      61    79      50
+89  Student119    3D Female Chinese      61    62      49
+90  Student191    3E   Male Chinese      61    88      52
+91  Student206    3F Female   Malay      61    62      55
+92  Student219    3F   Male   Malay      61    63      60
+93  Student244    3G Female   Malay      61    58      46
+94  Student269    3H Female Chinese      61    52      46
+95  Student186    3E   Male Chinese      62    85      74
+96  Student189    3E   Male Chinese      62    58      59
+97  Student210    3F Female Chinese      62    74      68
+98  Student221    3F   Male   Malay      62    58      58
+99  Student245    3G Female   Malay      62    45      52
+100 Student260    3G   Male   Malay      62    79      57
+101 Student085    3C Female Chinese      63    64      49
+102 Student106    3C   Male Chinese      63    84      44
+103 Student148    3D   Male Chinese      63    74      63
+104 Student220    3F   Male Chinese      63    71      64
+105 Student235    3G Female   Malay      63    50      48
+106 Student270    3H Female Chinese      63    70      53
+107 Student285    3H Female Chinese      63    46      50
+108 Student300    3H Female  Others      63    67      65
+109 Student141    3D   Male  Indian      64    78      76
+110 Student157    3E Female Chinese      64    66      67
+111 Student175    3E   Male   Malay      64    66      54
+112 Student176    3E   Male Chinese      64    64      49
+113 Student184    3E   Male   Malay      64    65      63
+114 Student209    3F Female   Malay      64    69      55
+115 Student252    3G   Male Chinese      64    36      41
+116 Student275    3H Female   Malay      64    54      54
+117 Student098    3C   Male Chinese      65    90      63
+118 Student105    3C   Male Chinese      65    80      73
+119 Student155    3D   Male Chinese      65    68      66
+120 Student156    3E Female Chinese      65    78      65
+121 Student167    3E Female   Malay      65    79      51
+122 Student228    3F   Male   Malay      65    65      60
+123 Student234    3G Female   Malay      65    49      41
+124 Student238    3G Female Chinese      65    81      78
+125 Student133    3D Female   Malay      66    76      56
+126 Student162    3E Female   Malay      66    61      56
+127 Student180    3E   Male Chinese      66    71      72
+128 Student197    3F Female Chinese      66    72      61
+129 Student208    3F Female   Malay      66    64      69
+130 Student213    3F Female   Malay      66    70      61
+131 Student218    3F   Male Chinese      66    63      64
+132 Student229    3F   Male Chinese      66    80      74
+133 Student242    3G Female Chinese      66    63      50
+134 Student256    3G   Male   Malay      66    64      61
+135 Student112    3C   Male Chinese      67    73      54
+136 Student140    3D   Male Chinese      67    86      76
+137 Student183    3E   Male   Malay      67    72      63
+138 Student211    3F Female  Others      67    70      68
+139 Student223    3F   Male   Malay      67    68      59
+140 Student232    3F Female Chinese      67    95      84
+141 Student233    3F Female Chinese      67    80      56
+142 Student243    3G Female   Malay      67    53      44
+143 Student249    3G   Male Chinese      67    81      74
+144 Student254    3G   Male Chinese      67    74      59
+145 Student026    3A   Male Chinese      68    87      66
+146 Student097    3C   Male   Malay      68    63      50
+147 Student116    3C   Male Chinese      68    79      77
+148 Student145    3D   Male Chinese      68    83      65
+149 Student159    3E Female   Malay      68    74      58
+150 Student190    3E   Male  Others      68    67      59
+151 Student207    3F Female   Malay      68    69      65
+152 Student250    3G   Male Chinese      68    60      59
+153 Student268    3H Female   Malay      68    61      64
+154 Student204    3F Female   Malay      69    75      54
+155 Student216    3F Female Chinese      69    67      69
+156 Student247    3G Female Chinese      69    62      58
+157 Student257    3G   Male   Malay      69    44      50
+158 Student021    3A   Male Chinese      70    90      72
+159 Student126    3D Female  Others      70    70      68
+160 Student192    3E   Male   Malay      70    66      63
+161 Student205    3F Female   Malay      70    70      58
+162 Student230    3F   Male   Malay      70    84      73
+163 Student237    3G Female   Malay      70    63      42
+164 Student048    3B Female Chinese      71    82      72
+165 Student096    3C   Male   Malay      71    65      57
+166 Student100    3C   Male Chinese      71    82      72
+167 Student103    3C   Male Chinese      71    75      52
+168 Student131    3D Female  Others      71    75      74
+169 Student161    3E Female   Malay      71    79      68
+170 Student173    3E Female Chinese      71    89      83
+171 Student182    3E   Male Chinese      71    77      72
+172 Student217    3F   Male Chinese      71    74      68
+173 Student267    3G Female Chinese      71    63      58
+174 Student020    3A Female Chinese      72    91      77
+175 Student073    3B   Male Chinese      72    83      69
+176 Student079    3C Female Chinese      72    60      37
+177 Student132    3D Female Chinese      72    71      61
+178 Student136    3D   Male Chinese      72    96      77
+179 Student147    3D   Male Chinese      72    79      79
+180 Student151    3D   Male Chinese      72    74      78
+181 Student168    3E Female   Malay      72    52      55
+182 Student025    3A   Male Chinese      73    91      74
+183 Student046    3B Female Chinese      73    65      75
+184 Student087    3C Female Chinese      73    85      71
+185 Student089    3C Female Chinese      73    74      68
+186 Student090    3C Female Chinese      73    73      69
+187 Student094    3C Female Chinese      73    69      62
+188 Student099    3C   Male Chinese      73    79      74
+189 Student111    3C   Male   Malay      73    66      53
+190 Student118    3D Female Chinese      73    81      65
+191 Student120    3D Female Chinese      73    72      70
+192 Student122    3D Female Chinese      73    77      76
+193 Student143    3D   Male Chinese      73    74      72
+194 Student146    3D   Male Chinese      73    79      66
+195 Student150    3D   Male   Malay      73    85      71
+196 Student153    3D   Male Chinese      73    83      74
+197 Student170    3E Female  Indian      73    83      57
+198 Student174    3E   Male   Malay      73    75      69
+199 Student181    3E   Male Chinese      73    77      68
+200 Student214    3F Female Chinese      73    82      62
+201 Student088    3C Female Chinese      74    88      72
+202 Student101    3C   Male Chinese      74    75      80
+203 Student113    3C   Male Chinese      74    78      71
+204 Student137    3D   Male Chinese      74    86      77
+205 Student139    3D   Male Chinese      74    87      65
+206 Student158    3E Female Chinese      74    82      75
+207 Student169    3E Female Chinese      74    59      61
+208 Student236    3G Female Chinese      74    60      46
+209 Student067    3B   Male Chinese      75    84      80
+210 Student074    3B   Male Chinese      75    83      75
+211 Student093    3C Female Chinese      75    85      71
+212 Student110    3C   Male   Malay      75    76      72
+213 Student154    3D   Male Chinese      75    58      67
+214 Student178    3E   Male Chinese      75    68      64
+215 Student195    3F Female Chinese      75    70      73
+216 Student011    3A Female Chinese      76    91      74
+217 Student024    3A   Male Chinese      76    88      72
+218 Student035    3A   Male Chinese      76    89      71
+219 Student083    3C Female   Malay      76    75      63
+220 Student124    3D Female Chinese      76    67      53
+221 Student165    3E Female Chinese      76    82      67
+222 Student166    3E Female Chinese      76    80      75
+223 Student172    3E Female Chinese      76    71      62
+224 Student187    3E   Male Chinese      76    88      71
+225 Student053    3B Female Chinese      77    79      77
+226 Student054    3B Female Chinese      77    85      78
+227 Student063    3B Female Chinese      77    69      72
+228 Student068    3B   Male Chinese      77    93      82
+229 Student072    3B   Male Chinese      77    79      76
+230 Student104    3C   Male Chinese      77    91      72
+231 Student109    3C   Male   Malay      77    81      69
+232 Student125    3D Female Chinese      77    85      78
+233 Student129    3D Female Chinese      77    80      66
+234 Student134    3D Female Chinese      77    74      67
+235 Student142    3D   Male Chinese      77    89      80
+236 Student164    3E Female   Malay      77    54      68
+237 Student194    3E Female Chinese      77    78      72
+238 Student196    3F Female Chinese      77    80      69
+239 Student222    3F   Male   Malay      77    77      72
+240 Student006    3A Female Chinese      78    75      70
+241 Student032    3A   Male   Malay      78    85      84
+242 Student045    3B Female   Malay      78    83      65
+243 Student070    3B   Male   Malay      78    95      70
+244 Student092    3C Female Chinese      78    86      84
+245 Student108    3C   Male Chinese      78    78      70
+246 Student138    3D   Male  Indian      78    78      65
+247 Student149    3D   Male   Malay      78    83      79
+248 Student152    3D   Male  Others      78    61      74
+249 Student160    3E Female   Malay      78    71      49
+250 Student019    3A Female Chinese      79    77      70
+251 Student023    3A   Male Chinese      79    94      79
+252 Student028    3A   Male Chinese      79    90      80
+253 Student065    3B Female Chinese      79    91      85
+254 Student069    3B   Male Chinese      79    86      81
+255 Student080    3C Female   Malay      79    73      58
+256 Student086    3C Female   Malay      79    79      69
+257 Student091    3C Female Chinese      79    82      61
+258 Student095    3C Female Chinese      79    86      75
+259 Student107    3C   Male Chinese      79    92      61
+260 Student144    3D   Male Chinese      79    86      77
+261 Student004    3A Female Chinese      80    89      73
+262 Student034    3A   Male Chinese      80    88      78
+263 Student055    3B Female Chinese      80    89      85
+264 Student060    3B Female   Malay      80    79      77
+265 Student078    3B Female Chinese      80    97      83
+266 Student081    3C Female Chinese      80    76      69
+267 Student239    3G Female   Malay      80    56      52
+268 Student005    3A Female Chinese      81    79      62
+269 Student052    3B Female Chinese      81    85      82
+270 Student062    3B Female   Malay      81    87      81
+271 Student102    3C   Male Chinese      81    78      70
+272 Student121    3D Female   Malay      81    82      71
+273 Student123    3D Female Chinese      81    74      70
+274 Student128    3D Female  Others      81    76      70
+275 Student008    3A Female Chinese      82    78      82
+276 Student047    3B Female Chinese      82    86      78
+277 Student058    3B Female   Malay      82    81      65
+278 Student064    3B Female   Malay      82    87      78
+279 Student130    3D Female   Malay      82    80      67
+280 Student014    3A Female Chinese      83    93      84
+281 Student018    3A Female  Indian      83    90      83
+282 Student029    3A   Male Chinese      83    87      89
+283 Student050    3B Female Chinese      83    89      84
+284 Student066    3B   Male Chinese      83    97      88
+285 Student075    3B   Male Chinese      83    80      79
+286 Student084    3C Female Chinese      83    76      56
+287 Student127    3D Female   Malay      83    81      60
+288 Student003    3A Female Chinese      84    91      82
+289 Student037    3A   Male Chinese      84    91      74
+290 Student041    3B Female Chinese      84    85      78
+291 Student043    3B Female Chinese      84    97      88
+292 Student051    3B Female Chinese      84    83      70
+293 Student057    3B Female   Malay      84    90      80
+294 Student027    3A   Male Chinese      85    98      80
+295 Student031    3A   Male Chinese      85    91      78
+296 Student044    3B Female Chinese      85    92      84
+297 Student049    3B Female Chinese      85    86      83
+298 Student056    3B Female Chinese      85    86      77
+299 Student059    3B Female   Malay      85    74      75
+300 Student061    3B Female   Malay      85    87      79
+301 Student076    3B   Male Chinese      85    85      82
+302 Student135    3D Female Chinese      85    86      81
+303 Student001    3A Female Chinese      86    90      85
+304 Student033    3A   Male Chinese      86    95      84
+305 Student038    3A   Male Chinese      86    91      87
+306 Student071    3B   Male Chinese      86    91      88
+307 Student077    3B   Male Chinese      86    91      88
+308 Student009    3A Female Chinese      87    95      82
+309 Student022    3A   Male Chinese      87    90      91
+310 Student042    3B Female  Indian      87    92      81
+311 Student007    3A Female Chinese      88    91      86
+312 Student030    3A   Male Chinese      88    89      83
+313 Student040    3A Female   Malay      88    87      85
+314 Student039    3A   Male Chinese      89    97      90
+315 Student002    3A Female Chinese      90    93      89
+316 Student013    3A Female Chinese      90    97      90
+317 Student017    3A Female Chinese      90    85      89
+318 Student016    3A Female Chinese      91    95      91
+319 Student015    3A Female  Others      92    90      87
+320 Student010    3A Female Chinese      93    93      90
+321 Student012    3A Female Chinese      93    97      84
+322 Student036    3A   Male Chinese      96    99      96</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="one-sample-test-gghistostats-method" class="level2">
+<h2 class="anchored" data-anchor-id="one-sample-test-gghistostats-method">2.1 One-sample test: <em>gghistostats()</em> method</h2>
+<p>In the code chunk below, <a href="https://indrajeetpatil.github.io/ggstatsplot/reference/gghistostats.html">gghistostats()</a> is used to to build an visual of one-sample test on English scores.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">gghistostats</span>(<span class="at">data =</span> exam,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> ENGLISH,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"bayes"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">test.value =</span> <span class="dv">60</span>,</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"English scores"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="unpacking-the-bayes-factor" class="level2">
+<h2 class="anchored" data-anchor-id="unpacking-the-bayes-factor">2.2 Unpacking the Bayes Factor</h2>
+<ul>
+<li><p>A Bayes factor is the ratio of the likelihood of one particular hypothesis to the likelihood of another. It can be interpreted as a measure of the strength of evidence in favor of one theory among two competing theories.</p></li>
+<li><p>That is because the Bayes factor gives us a way to evaluate the data in favor of a null hypothesis, and to use external information to do so. It tells us what the weight of the evidence is in favor of a given hypothesis.</p></li>
+<li><p>When we are comparing two hypotheses, H1 (the alternate hypothesis) and H0 (the null hypothesis), the Bayes Factor is often written as B10. It can be defined mathematically as</p></li>
+<li><p>The <a href="https://www.statisticshowto.com/bayesian-information-criterion/">Schwarz criterion</a> is one of the easiest ways to calculate rough approximation of the Bayes Factor.</p></li>
+</ul>
+</section>
+<section id="how-to-interpret-bayes-factor" class="level2">
+<h2 class="anchored" data-anchor-id="how-to-interpret-bayes-factor">2.3 How to interpret Bayes Factor</h2>
+<p>A <strong>Bayes Factor</strong> can be any positive number. One of the most common interpretations is this one—first proposed by Harold Jeffereys (1961) and slightly modified by <a href="https://www-tandfonline-com.libproxy.smu.edu.sg/doi/pdf/10.1080/00031305.1999.10474443?needAccess=true">Lee and Wagenmakers</a> in 2013.</p>
+</section>
+<section id="two-sample-mean-test-ggbetweenstats" class="level2">
+<h2 class="anchored" data-anchor-id="two-sample-mean-test-ggbetweenstats">2.4 Two-sample mean test: <em>ggbetweenstats()</em></h2>
+<p>In the code chunk below, <a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggbetweenstats.html">ggbetweenstats()</a> is used to build a visual for two-sample mean test of Maths scores by gender.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(<span class="at">data =</span> exam,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> GENDER, </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> MATHS,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"np"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="oneway-anova-test-ggbetweenstats-method" class="level2">
+<h2 class="anchored" data-anchor-id="oneway-anova-test-ggbetweenstats-method">2.5 Oneway ANOVA Test: <em>ggbetweenstats()</em> method</h2>
+<p>In the code chunk below, <code>ggbetweenstats()</code> is used to build a visual for One-way ANOVA test on English score by race.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbetweenstats</span>(<span class="at">data =</span> exam,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> RACE, </span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> ENGLISH,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"p"</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">mean.ci =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.comparisons =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">pairwise.display =</span> <span class="st">"s"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">p.adjust.method =</span> <span class="st">"fdr"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">messages =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<ul>
+<li><p>“ns” → only non-significant</p></li>
+<li><p>“s” → only significant</p></li>
+<li><p>“all” → everything</p></li>
+</ul>
+</section>
+<section id="significant-test-of-correlation-ggscatterstats" class="level2">
+<h2 class="anchored" data-anchor-id="significant-test-of-correlation-ggscatterstats">2.6 Significant Test of Correlation: <em>ggscatterstats()</em></h2>
+<p>In the code chunk below, <a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggscatterstats.html">ggscatterstats()</a> is used to build a visual for Significant Test of Correlation between Maths scores and English scores.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggscatterstats</span>(<span class="at">data =</span> exam,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> MATHS,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> ENGLISH,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">marginal =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="significant-test-of-association-depedence-ggbarstats-methods" class="level2">
+<h2 class="anchored" data-anchor-id="significant-test-of-association-depedence-ggbarstats-methods">2.7 Significant Test of Association (Depedence) : <em>ggbarstats()</em> methods</h2>
+<p>In the code chunk below, the Maths scores is binned into a 4-class variable by using <code>cut()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>exam1 <span class="ot">&lt;-</span> exam <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">MATHS_bins =</span> </span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>           <span class="fu">cut</span>(MATHS, </span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>               <span class="at">breaks =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">60</span>,<span class="dv">75</span>,<span class="dv">85</span>,<span class="dv">100</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In this code chunk below <a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggbarstats.html">ggbarstats()</a> is used to build a visual for Significant Test of Association</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggbarstats</span>(exam1, </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">x =</span> MATHS_bins, </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> GENDER)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="visualizing-models" class="level1">
+<h1>3 Visualizing Models</h1>
+<p>In this section, we will use parameters package to learn how to visualize model diagnostic and model parameters.</p>
+<p>Toyota Corolla case study will be used. The purpose of study is to build a model to discover factors affecting prices of used-cars by taking into consideration a set of explanatory variables.</p>
+</section>
+<section id="getting-started-1" class="level1">
+<h1>4 Getting Started</h1>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Loading R package</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Importing Data</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-3" role="tab" aria-controls="tabset-2-3" aria-selected="false">Summarizing Data</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>The code chunk below uses <code>p_load()</code> of pacman package to check if these packages are installed in the computer and load them onto your working R environment.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readxl, performance, parameters, see, ggplot2) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>In the code chunk below, <code>read_xls()</code> of <strong>readxl</strong> package is used to import the data worksheet of <code>ToyotaCorolla.xls</code> workbook into R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>car_resale <span class="ot">&lt;-</span> <span class="fu">read_xls</span>(<span class="st">"data/ToyotaCorolla.xls"</span>, </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"data"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div id="tabset-2-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-3-tab">
+<p>The code chunk below uses <code>stat()</code>to summarize the data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">stat</span>(car_resale)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,436 × 38
+      Id Model    Price Age_08_04 Mfg_Month Mfg_Year     KM Quarterly_Tax Weight
+   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;         &lt;dbl&gt;  &lt;dbl&gt;
+ 1    81 TOYOTA … 18950        25         8     2002  20019           100   1180
+ 2     1 TOYOTA … 13500        23        10     2002  46986           210   1165
+ 3     2 TOYOTA … 13750        23        10     2002  72937           210   1165
+ 4     3 &nbsp;TOYOTA… 13950        24         9     2002  41711           210   1165
+ 5     4 TOYOTA … 14950        26         7     2002  48000           210   1165
+ 6     5 TOYOTA … 13750        30         3     2002  38500           210   1170
+ 7     6 TOYOTA … 12950        32         1     2002  61000           210   1170
+ 8     7 &nbsp;TOYOTA… 16900        27         6     2002  94612           210   1245
+ 9     8 TOYOTA … 18600        30         3     2002  75889           210   1245
+10    44 TOYOTA … 16950        27         6     2002 110404           234   1255
+# ℹ 1,426 more rows
+# ℹ 29 more variables: Guarantee_Period &lt;dbl&gt;, HP_Bin &lt;chr&gt;, CC_bin &lt;chr&gt;,
+#   Doors &lt;dbl&gt;, Gears &lt;dbl&gt;, Cylinders &lt;dbl&gt;, Fuel_Type &lt;chr&gt;, Color &lt;chr&gt;,
+#   Met_Color &lt;dbl&gt;, Automatic &lt;dbl&gt;, Mfr_Guarantee &lt;dbl&gt;,
+#   BOVAG_Guarantee &lt;dbl&gt;, ABS &lt;dbl&gt;, Airbag_1 &lt;dbl&gt;, Airbag_2 &lt;dbl&gt;,
+#   Airco &lt;dbl&gt;, Automatic_airco &lt;dbl&gt;, Boardcomputer &lt;dbl&gt;, CD_Player &lt;dbl&gt;,
+#   Central_Lock &lt;dbl&gt;, Powered_Windows &lt;dbl&gt;, Power_Steering &lt;dbl&gt;, …</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="multiple-regression-model-using-lm" class="level2">
+<h2 class="anchored" data-anchor-id="multiple-regression-model-using-lm">4.1 Multiple Regression Model using lm()</h2>
+<p>The code chunk below is used to calibrate a multiple linear regression model by using <code>lm()</code> of Base Stats of R.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(Price <span class="sc">~</span> Age_08_04 <span class="sc">+</span> Mfg_Year <span class="sc">+</span> KM <span class="sc">+</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>              Weight <span class="sc">+</span> Guarantee_Period, <span class="at">data =</span> car_resale)</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>model</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Price ~ Age_08_04 + Mfg_Year + KM + Weight + Guarantee_Period, 
+    data = car_resale)
+
+Coefficients:
+     (Intercept)         Age_08_04          Mfg_Year                KM  
+      -2.637e+06        -1.409e+01         1.315e+03        -2.323e-02  
+          Weight  Guarantee_Period  
+       1.903e+01         2.770e+01  </code></pre>
+</div>
+</div>
+</section>
+<section id="model-diagnostic-checking-for-multicolinearity" class="level2">
+<h2 class="anchored" data-anchor-id="model-diagnostic-checking-for-multicolinearity">4.2 Model Diagnostic: checking for multicolinearity</h2>
+<p>In the code chunk, <a href="https://easystats.github.io/performance/reference/check_collinearity.html">check_collinearity()</a> of <a href="https://easystats.github.io/performance/"><strong>performance</strong></a> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_collinearity</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Check for Multicollinearity
+
+Low Correlation
+
+             Term  VIF     VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+               KM 1.46 [ 1.37,  1.57]         1.21      0.68     [0.64, 0.73]
+           Weight 1.41 [ 1.32,  1.51]         1.19      0.71     [0.66, 0.76]
+ Guarantee_Period 1.04 [ 1.01,  1.17]         1.02      0.97     [0.86, 0.99]
+
+High Correlation
+
+      Term   VIF     VIF 95% CI Increased SE Tolerance Tolerance 95% CI
+ Age_08_04 31.07 [28.08, 34.38]         5.57      0.03     [0.03, 0.04]
+  Mfg_Year 31.16 [28.16, 34.48]         5.58      0.03     [0.03, 0.04]</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>check_c <span class="ot">&lt;-</span> <span class="fu">check_collinearity</span>(model)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(check_c)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-diagnostic-checking-normality-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="model-diagnostic-checking-normality-assumption">4.3 Model Diagnostic: checking normality assumption</h2>
+<p>In the code chunk, <a href="https://easystats.github.io/performance/reference/check_normality.html">check_normality()</a> of <a href="https://easystats.github.io/performance/"><strong>performance</strong></a> package is used.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>model1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Price <span class="sc">~</span> Age_08_04 <span class="sc">+</span> KM <span class="sc">+</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>              Weight <span class="sc">+</span> Guarantee_Period, <span class="at">data =</span> car_resale)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>check_n <span class="ot">&lt;-</span> <span class="fu">check_normality</span>(model1)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(check_n, <span class="at">type =</span><span class="st">"qq"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-diagnostic-check-model-for-homogeneity-of-variances" class="level2">
+<h2 class="anchored" data-anchor-id="model-diagnostic-check-model-for-homogeneity-of-variances">4.4 Model Diagnostic: Check model for homogeneity of variances</h2>
+<p>In the code chunk, <a href="https://easystats.github.io/performance/reference/check_heteroscedasticity.html">check_heteroscedasticity()</a> of <a href="https://easystats.github.io/performance/"><strong>performance</strong></a> package is used.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>check_h <span class="ot">&lt;-</span> <span class="fu">check_heteroscedasticity</span>(model1)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(check_h)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="model-diagnostic-complete-check" class="level2">
+<h2 class="anchored" data-anchor-id="model-diagnostic-complete-check">4.5 Model Diagnostic: Complete check</h2>
+<p>We can also perform the complete by using <a href="https://easystats.github.io/performance/reference/check_model.html">check_model()</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(model1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="visualising-regression-parameters-see-methods" class="level2">
+<h2 class="anchored" data-anchor-id="visualising-regression-parameters-see-methods">4.6 Visualising Regression Parameters: see methods</h2>
+<p>In the code chunk, plot() of see package and parameters() of parameters package is used to visualize the parameters of a regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">parameters</span>(model1))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="visualizing-regression-parameters-ggcoefstats-methods" class="level2">
+<h2 class="anchored" data-anchor-id="visualizing-regression-parameters-ggcoefstats-methods">4.7 Visualizing Regression Parameters: <em>ggcoefstats()</em> methods</h2>
+<p>In the code chunk, <a href="https://indrajeetpatil.github.io/ggstatsplot/reference/ggcoefstats.html">ggcoefstats()</a> of ggstatsplot package is used to visualize the parameters of a regression model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggcoefstats</span>(model1, </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>            <span class="at">output =</span> <span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="Hands-on_Ex4b_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
