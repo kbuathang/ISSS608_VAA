@@ -4,7 +4,7 @@ date: February 8,2024
 date-modified: "last-modified"
 toc: true
 execute: 
-  eval: true
+  eval: false
   echo: true
   warning: false
 code-fold: false
@@ -38,7 +38,7 @@ We need to manipulate and prepare a data.frame that is appropriate for treemap v
 
 -   group transaction records by *Project Name*, *Planning Region*, *Planning Area*, *Property Type* and *Type of Sale*, and
 
--   compute *Total Unit Sold*, *Total Area*, *Median Unit Price* and *Median Transacted Price* by applying appropriate summary statistics on *No. of Units*, *Area (sqm)*, *Unit Price (\$ psm)* and *Transacted Price (\$)* respectively.
+-   compute *Total Unit Sold*, *Total Area*, *Median Unit Price* and *Median Transacted Price* by applying appropriate summary statistics on *No. of Units*, *Area (sqm)*, *Unit Price (\$ psm)* and *Transacted Price (\$)* respectively.
 
 Two key verbs of **dplyr** package, namely: *group_by()* and *summarize()* will be used to perform these steps.
 
@@ -321,7 +321,7 @@ install.packages("devtools")
 
 ```{r}
 library(devtools)
-install_github("timelyportfolio/d3treeR")
+install_github("timelyportfolio/d3treeR",force = TRUE)
 ```
 
 ```{r} 
@@ -344,5 +344,5 @@ tm <- treemap(realis2018_summarised,
 
 2. Then *d3tree()* is used to build an interactive treemap.
 ```{r}
-d3tree(tm,rootname = "Singapore" )
+d3tree(tm,rootname = "Singapore")
 ```
