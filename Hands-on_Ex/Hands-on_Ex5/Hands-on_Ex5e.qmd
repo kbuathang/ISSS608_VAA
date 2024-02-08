@@ -315,7 +315,7 @@ ggplot(data=realis2018_selected,
 
 ## 4.1  Installing *d3treeR* package 
 
-```{r}
+```{r,eval=FALSE}
 install.packages("devtools")
 ```
 
