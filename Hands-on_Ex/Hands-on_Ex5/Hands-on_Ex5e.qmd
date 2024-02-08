@@ -4,7 +4,7 @@ date: February 8,2024
 date-modified: "last-modified"
 toc: true
 execute: 
-  eval: false
+  eval: true
   echo: true
   warning: false
 code-fold: false
