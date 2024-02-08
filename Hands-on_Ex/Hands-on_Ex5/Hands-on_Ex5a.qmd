@@ -60,9 +60,11 @@ agpop_mutated <- pop_data %>%
 :::
 
 # 2 Plotting Ternary Diagram with R
+
 # 2.1 Plotting a static ternary diagram
 
 Use `ggtern()` function of **ggtern** package to create a simple ternary plot.
+
 ```{r}
 #| code-fold: false
 ggtern(data=agpop_mutated,aes(x=YOUNG,y=ACTIVE, z=OLD)) +
@@ -76,7 +78,6 @@ ggtern(data=agpop_mutated, aes(x=YOUNG,y=ACTIVE, z=OLD)) +
   labs(title="Population structure, 2015") +
   theme_rgbw()+theme_rotate()
 ```
-
 
 ## 2.2 Plotting an interative ternary diagram
 
@@ -124,12 +125,3 @@ plot_ly(
     ternary = ternaryAxes
   )
 ```
-
-
-
-
-
-
-
-
-

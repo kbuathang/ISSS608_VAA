@@ -260,7 +260,7 @@ heatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),
           colors = Reds)
 ```
 
-## 3.8  **The finishing touch**
+## 3.8 **The finishing touch**
 
 In the code chunk below the following arguments are used:
 

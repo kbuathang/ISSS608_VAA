@@ -286,6 +286,7 @@ corrplot.mixed(wine.cor,
 ```
 
 ## 5.7 Reordering a correlation matrix using hclust
+
 `corrplot()` can draw rectangles around the corrgram based on the results of hierarchical clustering by using **hclust**
 
 ```{r}
