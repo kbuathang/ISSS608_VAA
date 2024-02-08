@@ -1,0 +1,181 @@
+---
+title: "Project EDA"
+---
+
+# Installing R packages
+```{r}
+#| code-fold: false
+pacman::p_load(tidyverse, haven, ggrepel, patchwork,ggplot2, 
+               ggthemes, hrbrthemes,dplyr,tidyr,knitr,ggridges,lubridate)
+```
+
+# Importing data
+```{r}
+#| code-fold: false
+Pollution <- read_csv("data/pollutants_singapore.csv") %>%
+  select(Area,date,pm25,psi)
+```
+
+````{r}
+weather <- read_csv("data/weather_singapore_2014_to_2017.csv", locale = locale(encoding = "ISO-8859-1"))
+
+weather <- weather %>%
+  mutate(date = make_date(Year, Month, Day))
+```
+
+# Data structure
+```{r}
+#| code-fold: false
+glimpse(Pollution)
+```
+
+# checking duplicates
+```{r}
+#| code-fold: false
+Pollution[duplicated(Pollution),]
+```
+
+# Missing values
+
+```{r}
+#| code-fold: false
+na_count <- sapply(Pollution, function(y) sum(length(which(is.na(y)))))
+
+na_count
+
+```
+
+```{r}
+na_count_w <- sapply(weather, function(y) sum(length(which(is.na(y)))))
+
+zero_count_w <- sapply(weather, function(y) sum(y == 0, na.rm = TRUE))
+zero_count_w
+
+```
+
+# drop missing values
+
+```{r}
+#| code-fold: false
+Pollution_v2 <- Pollution %>%
+  drop_na()
+
+sum(is.na(Pollution_v2))
+```
+
+
+# Converting data type
+```{r}
+pollutants <- Pollution %>%
+  mutate(date = trimws(date), # Remove any leading/trailing whitespace
+         date = as.Date(date, format="%Y/%m/%d")) # Convert to Date
+```
+# summary
+
+```{r}
+summary(pollutants)
+
+```
+
+#
+```{r}
+#  filter the data for the area "Central"
+central_pollution <- pollutants %>%
+  filter(Area == "Central")
+
+west_pollution <- pollutants %>%
+  filter(Area == "West")
+
+north_pollution <- pollutants %>%
+  filter(Area == "North")
+
+south_pollution <- pollutants %>%
+  filter(Area == "South")
+
+east_pollution <- pollutants %>%
+  filter(Area == "East")
+```
+
+::: panel-tabset
+## PM 2.5 concentration across areas
+```{r} 
+ggplot(data = pollutants, aes(x = date, y = pm25, color = Area)) +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "Time Series of PM2.5 Across Different Areas",
+       x = "Date",
+       y = "PM2.5 Concentration",
+       color = "Area")
+```
+
+## Merge graph
+```{r}
+# Merge the datasets by 'Area' and the new 'date' column
+combined_data <- merge(pollutants, weather, by = c("date", "Area"))
+
+
+# Create the plot
+p <- ggplot(data = combined_data, aes(x = date, y = pm25, color = Area)) +
+  geom_line() +
+  facet_wrap(~ Area, scales = 'free_y') +
+  theme_minimal() +
+  labs(title = "Time Series of PM2.5 and Rainfall Across Different Areas",
+       x = "Date",
+       y = "Concentration / Rainfall")
+
+```
+
+## PM 2.5 by year
+```{r}
+# Convert the date to a Date object and extract the year
+pollutants_yr <- pollutants %>%
+  mutate(date = as.Date(date),
+         year = factor(year(date)))
+
+# Calculate the average PM2.5 for each area for each year
+annual_avg_pm25 <- pollutants_yr %>%
+  group_by(Area, year) %>%
+  summarise(annual_avg_pm25 = mean(pm25, na.rm = TRUE))
+
+print(annual_avg_pm25)
+```
+
+```{r}
+# Plot the annual average PM2.5 by area
+ggplot(data = annual_avg_pm25, aes(x = year, y = annual_avg_pm25, color = Area)) +
+  geom_line() +
+  scale_x_discrete() +  # This forces the x-axis to be discrete
+  theme_minimal() +
+  labs(title = "Annual Average PM2.5 Concentration Across Different Areas",
+       x = "Year",
+       y = "Annual Average PM2.5 Concentration",
+       color = "Area")
+```
+
+## PM 2.5 concentration for each area
+```{r}
+ggplot(data = pollutants, aes(x = date, y = pm25, color = Area)) +
+  geom_line() +
+  theme_minimal() +
+  facet_wrap(~ Area, scales = 'free_y') +  # Add faceting by area
+  labs(title = "Time Series of PM2.5 Across Different Areas",
+       x = "Date",
+       y = "PM2.5 Concentration")
+
+```
+
+```{r}
+ggplot(data = Pollution, aes(x = Area, y = pm25)) +
+  geom_boxplot() +
+  labs(title = "Boxplot of PM2.5 Concentrations by Area",
+       x = "Area",
+       y = "PM2.5 Concentration")+
+  stat_summary(geom = "point",       
+               fun.y="mean",         
+               colour ="red",        
+               size=2)
+  scale_y_continuous(limits = c(0, 300))
+```
+
+::: 
+

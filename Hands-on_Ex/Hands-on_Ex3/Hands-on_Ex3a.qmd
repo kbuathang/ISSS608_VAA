@@ -195,7 +195,8 @@ Code chunk below shows the second interactive feature of ggiraph, namely `data_i
 p <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
   geom_dotplot_interactive(           
-    aes(data_id = CLASS),             
+    aes(data_id = CLASS,
+        tooltip = CLASS),             
     stackgroups = TRUE,               
     binwidth = 1,                        
     method = "histodot") +               
@@ -312,7 +313,8 @@ We can implement coordinated multiple views methods in the data visualization be
 p1 <- ggplot(data=exam_data, 
        aes(x = MATHS)) +
   geom_dotplot_interactive(              
-    aes(data_id = ID),              
+    aes(data_id = ID,
+        tooltip = ID),              
     stackgroups = TRUE,                  
     binwidth = 1,                        
     method = "histodot") +  
@@ -323,7 +325,8 @@ p1 <- ggplot(data=exam_data,
 p2 <- ggplot(data=exam_data, 
        aes(x = ENGLISH)) +
   geom_dotplot_interactive(              
-    aes(data_id = ID),              
+    aes(data_id = ID,
+        tooltip = ID),              
     stackgroups = TRUE,                  
     binwidth = 1,                        
     method = "histodot") + 

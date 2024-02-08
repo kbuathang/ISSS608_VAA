@@ -11,7 +11,7 @@
     "href": "index.html",
     "title": "Welcome to ISSS608 Visual Analytics and Applications website",
     "section": "",
-    "text": "Lastest Posts\n\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 4a: Visualising Distribution\n\n\n\n\n\n\n\n\n\nFeb 1, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 4b: Visual Statistical Analysis\n\n\n\n\n\n\n\n\n\nFeb 1, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 4c: Visualizing Uncertainty\n\n\n\n\n\n\n\n\n\nFeb 1, 2024\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Lastest Posts\n\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data\n\n\n\n\n\n\n\n\n\nFeb 7, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot\n\n\n\n\n\n\n\n\n\nFeb 7, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 5a: Creating Ternary Plot with R\n\n\n\n\n\n\n\n\n\nFeb 4, 2024\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "indexA.html",
@@ -501,7 +501,7 @@
     "href": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3a.html#hover-effect-with-data_id-aesthetic",
     "title": "Hands-on Exercise 3a : Programming Interactive Data Visualisation with R",
     "section": "3.4 Hover effect with data_id aesthetic",
-    "text": "3.4 Hover effect with data_id aesthetic\nCode chunk below shows the second interactive feature of ggiraph, namely data_id.\n\n\nCode\np &lt;- ggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_dotplot_interactive(           \n    aes(data_id = CLASS),             \n    stackgroups = TRUE,               \n    binwidth = 1,                        \n    method = \"histodot\") +               \n  scale_y_continuous(NULL,               \n                     breaks = NULL)\ngirafe(                                  \n  ggobj = p,                             \n  width_svg = 6,                         \n  height_svg = 6*0.618                      \n)                                        \n\n\n\n\n\n\nInteractivity: Elements associated with a data_id (i.e CLASS) will be highlighted upon mouse over."
+    "text": "3.4 Hover effect with data_id aesthetic\nCode chunk below shows the second interactive feature of ggiraph, namely data_id.\n\n\nCode\np &lt;- ggplot(data=exam_data, \n       aes(x = MATHS)) +\n  geom_dotplot_interactive(           \n    aes(data_id = CLASS,\n        tooltip = CLASS),             \n    stackgroups = TRUE,               \n    binwidth = 1,                        \n    method = \"histodot\") +               \n  scale_y_continuous(NULL,               \n                     breaks = NULL)\ngirafe(                                  \n  ggobj = p,                             \n  width_svg = 6,                         \n  height_svg = 6*0.618                      \n)                                        \n\n\n\n\n\n\nInteractivity: Elements associated with a data_id (i.e CLASS) will be highlighted upon mouse over."
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex3/Hands-on_Ex3a.html#styling-hover-effect",
@@ -964,5 +964,236 @@
     "title": "Hands-on Exercise 4d:Funnel Plots for Fair Comparisons",
     "section": "3.4 Interactive Funnel Plot: plotly + ggplot2",
     "text": "3.4 Interactive Funnel Plot: plotly + ggplot2\nThe funnel plot created using ggplot2 functions can be made interactive with ggplotly() of plotly r package.\n\nfp_ggplotly &lt;- ggplotly(p,\n  tooltip = c(\"label\", \n              \"x\", \n              \"y\"))\nfp_ggplotly"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5a.html",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5a.html",
+    "title": "Hands-on Exercise 5a: Creating Ternary Plot with R",
+    "section": "",
+    "text": "In this exercise, we will use the following our R packages.\n\nggtern: a ggplot extension specially designed to plot ternary diagrams. The package will be used to plot static ternary plots.\nPlotly R, R library for plotting interactive statistical graphs via plotly’s JavaScript graphing library, plotly.js. The plotly R libary contains the ggplotly function, which will convert ggplot2 figures into a Plotly object.\ntidyverse, a family of modern R packages specially designed to support data science, analysis and communication task.\n\n\nLoading R packageImporting DataPreparing Data\n\n\nThe code chunk below uses p_load() of pacman package to check if these packages are installed in the computer and load them onto your working R environment.\n\npacman::p_load(plotly, ggtern, tidyverse)\n\n\n\nThe code chunk below imports respopagsex2000to2018_tidy.csv into R environment by using read_csv() function of readr package.\n\npop_data &lt;- read_csv(\"data/respopagsex2000to2018_tidy.csv\") \n\n\n\nNext, use the mutate() function of dplyr package to derive three new measures, namely: young, active, and old.\n\n#Deriving the young, economy active and old measures\nagpop_mutated &lt;- pop_data %&gt;%\n  mutate(`Year` = as.character(Year))%&gt;%\n  spread(AG, Population) %&gt;%\n  mutate(YOUNG = rowSums(.[4:8]))%&gt;%\n  mutate(ACTIVE = rowSums(.[9:16]))  %&gt;%\n  mutate(OLD = rowSums(.[17:21])) %&gt;%\n  mutate(TOTAL = rowSums(.[22:24])) %&gt;%\n  filter(Year == 2018)%&gt;%\n  filter(TOTAL &gt; 0)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5a.html#plotting-an-interative-ternary-diagram",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5a.html#plotting-an-interative-ternary-diagram",
+    "title": "Hands-on Exercise 5a: Creating Ternary Plot with R",
+    "section": "2.2 Plotting an interative ternary diagram",
+    "text": "2.2 Plotting an interative ternary diagram\nThe code below create an interactive ternary plot using plot_ly() function of Plotly R.\n\n# reusable function for creating annotation object\nlabel &lt;- function(txt) {\n  list(\n    text = txt, \n    x = 0.1, y = 1,\n    ax = 0, ay = 0,\n    xref = \"paper\", yref = \"paper\", \n    align = \"center\",\n    font = list(family = \"serif\", size = 15, color = \"black\"),\n    bgcolor = \"#b3b3b3\", bordercolor = \"black\", borderwidth = 2\n  )\n}\n\n# reusable function for axis formatting\naxis &lt;- function(txt) {\n  list(\n    title = txt, tickformat = \".0%\", tickfont = list(size = 10)\n  )\n}\n\nternaryAxes &lt;- list(\n  aaxis = axis(\"Young\"), \n  baxis = axis(\"Active\"), \n  caxis = axis(\"Old\")\n)\n\n# Initiating a plotly visualization \nplot_ly(\n  agpop_mutated, \n  a = ~YOUNG, \n  b = ~ACTIVE, \n  c = ~OLD, \n  color = I(\"red\"), \n  type = \"scatterternary\"\n) %&gt;%\n  layout(\n    annotations = label(\"Ternary Markers\"), \n    ternary = ternaryAxes\n  )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "",
+    "text": "In this exercise, we will use corrplot, ggpubr, plotly and tidyverse in RStudio.\n\nLoading R packageImporting Data\n\n\nThe code chunk below uses p_load() of pacman package to check if these packages are installed in the computer and load them onto your working R environment.\n\npacman::p_load(corrplot, ggstatsplot, tidyverse)\n\n\n\nThe code chunk below imports the data into R environment by using read_csv() function of readr package.\n\nwine &lt;- read_csv(\"data/wine_quality.csv\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#building-a-basic-correlation-matrix",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#building-a-basic-correlation-matrix",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "2.1 Building a basic correlation matrix",
+    "text": "2.1 Building a basic correlation matrix\nFigure below shows the scatter plot matrix of Wine Quality Data. It is a 11 by 11 matrix.\n\npairs(wine[,1:11])\n\n\n\n\nThe required input of pairs() can be a matrix or data frame. The code chunk used to create the scatterplot matrix is relatively simple. It uses the default pairs function. Columns 2 to 12 of wine dataframe is used to build the scatterplot matrix. The variables are: fixed acidity, volatile acidity, citric acid, residual sugar, chlorides, free sulfur dioxide, total sulfur dioxide, density, pH, sulphates and alcohol.\n\npairs(wine[,2:12])"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#drawing-the-lower-corner",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#drawing-the-lower-corner",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "2.2 Drawing the lower corner",
+    "text": "2.2 Drawing the lower corner\nThe upper.panel argument will be used to show the lower half of the correlation matrix.\n\npairs(wine[,2:12], upper.panel = NULL)\n\n\n\n\nThe lower.panel argument will be used to show the upper half of the correlation matrix.\n\npairs(wine[,2:12], lower.panel = NULL)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#including-with-correlation-coefficients",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#including-with-correlation-coefficients",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "2.3 Including with correlation coefficients",
+    "text": "2.3 Including with correlation coefficients\npanel.cor function will be used to show the correlation coefficient of each pair of variables instead of a scatter plot.\n\npanel.cor &lt;- function(x, y, digits=2, prefix=\"\", cex.cor, ...) {\nusr &lt;- par(\"usr\")\non.exit(par(usr))\npar(usr = c(0, 1, 0, 1))\nr &lt;- abs(cor(x, y, use=\"complete.obs\"))\ntxt &lt;- format(c(r, 0.123456789), digits=digits)[1]\ntxt &lt;- paste(prefix, txt, sep=\"\")\nif(missing(cex.cor)) cex.cor &lt;- 0.8/strwidth(txt)\ntext(0.5, 0.5, txt, cex = cex.cor * (1 + r) / 2)\n}\n\npairs(wine[,2:12], \n      upper.panel = panel.cor)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#the-basic-plot",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#the-basic-plot",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "3.1 The basic plot",
+    "text": "3.1 The basic plot\nOne of the advantage of using ggcorrmat() over many other methods to visualize a correlation matrix is it is ability to provide a comprehensive and yet professional statistical report as shown in the figure below.\n\nggstatsplot::ggcorrmat(\n  data = wine, \n  cor.vars = 1:11)\n\n\n\n\n\nggstatsplot::ggcorrmat(data = wine, \n  cor.vars = 1:11,\n  ggcorrplot.args = list(outline.color = \"black\", \n                         hc.order = TRUE,\n                         tl.cex = 10,\n                         lab_size = 2.5),\n  title    = \"Correlogram for wine dataset\",\n  subtitle = \"Four pairs are no significant at p &lt; 0.05\")\n\n\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above\n\n\n\n\ncor.vars argument is used to compute the correlation matrix needed to build the corrgram.\nggcorrplot.args argument provide additional (mostly aesthetic) arguments that will be passed to ggcorrplot::ggcorrplot function. The list should avoid any of the following arguments since they are already internally being used: corr, method, p.mat, sig.level, ggtheme, colors, lab, pch, legend.title, digits.\n\n\n\nThe sample sub-code chunk can be used to control specific component of the plot such as the font size of the x-axis, y-axis, and the statistical report.\n\nggplot.component = list(\n    theme(text=element_text(size=5),\n      axis.text.x = element_text(size = 8),\n      axis.text.y = element_text(size = 8)))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#getting-started-with-corrplot",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#getting-started-with-corrplot",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.1 Getting started with corrplot",
+    "text": "5.1 Getting started with corrplot\nIn the code chunk below, cor() of R Stats is used to compute the correlation matrix of wine data frame.\n\nwine.cor &lt;- cor(wine[, 1:11])\n\nNext,corrplot() is used to plot the corrgram by using all the default setting as shown in the code chunk below.\n\ncorrplot(wine.cor)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#working-with-visual-geometrics",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#working-with-visual-geometrics",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.2 Working with visual geometrics",
+    "text": "5.2 Working with visual geometrics\nThere are seven visual geometrics geometrics to encode the attribute values which are circle, square, ellipse, number, shade, color and pie. The default is circle. However, this default setting can be changed by using the method argument as shown in the code chunk below.\n\ncorrplot(wine.cor, \n         method = \"square\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#working-with-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#working-with-layout",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.3 Working with layout",
+    "text": "5.3 Working with layout\nThere are three layout types which EW “full”, “upper” and “lower”. The default is “full”. However, this default setting can be changed by using the type argument. Furthermore, arguments diag and tl.col are used to turn off the diagonal cells and to change the axis text label color to black color respectively as shown in below.\n\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         type=\"upper\",\n         diag = FALSE,\n         tl.col = \"black\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#working-with-mixed-layout",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#working-with-mixed-layout",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.4 Working with mixed layout",
+    "text": "5.4 Working with mixed layout\nThecorrplot.mixed(), a wrapped function for mixed visualization style, uses to create a corrgram with mixed layout.\n\ncorrplot.mixed(wine.cor, \n               lower = \"square\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               tl.col = \"black\",\n               number.cex = 0.7)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#combining-corrgram-with-the-significant-test",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#combining-corrgram-with-the-significant-test",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.5 Combining corrgram with the significant test",
+    "text": "5.5 Combining corrgram with the significant test\nIn this section, we will show a corrgram combined with the significant test. The corrgram reveals that not all correlation pairs are statistically significant. For example, the correlation between total sulfur dioxide and free surfur dioxide is statistically significant at significant level of 0.1 but not the pair between total sulfur dioxide and citric acid.\nThe cor.mtest() is used to compute the p-values and confidence interval for each pair of variables. Then,the p.mat argument of corrplot function is used as in the code chunk below.\n\nwine.sig = cor.mtest(wine.cor, conf.level= .95)\n\ncorrplot(wine.cor,\n         method = \"number\",\n         type = \"lower\",\n         diag = FALSE,\n         tl.col = \"black\",\n         tl.srt = 45,\n         p.mat = wine.sig$p,\n         sig.level = .05,\n         number.cex = 0.7)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#reorder-a-corrgram",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#reorder-a-corrgram",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.6 Reorder a corrgram",
+    "text": "5.6 Reorder a corrgram\nCurrently, corrplot package support four sorting methods, they are:\n\n“AOE” is for the angular order of the eigenvectors. See Michael Friendly (2002) for details.\n“FPC” for the first principal component order.\n“hclust” for hierarchical clustering order, and “hclust.method” for the agglomeration method to be used.\n\n“hclust.method” should be one of “ward”, “single”, “complete”, “average”, “mcquitty”, “median” or “centroid”.\n\n“alphabet” for alphabetical order.\n\n“AOE”, “FPC”, “hclust”, “alphabet”. More algorithms can be found in seriation package.\n\n\nCode\ncorrplot.mixed(wine.cor, \n               lower = \"ellipse\", \n               upper = \"number\",\n               tl.pos = \"lt\",\n               diag = \"l\",\n               order= \"FPC\",\n               tl.col = \"black\",\n               number.cex = 0.7)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#reordering-a-correlation-matrix-using-hclust",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5b.html#reordering-a-correlation-matrix-using-hclust",
+    "title": "Hands-on Exercise 5b: Visual Correlation Analysis",
+    "section": "5.7 Reordering a correlation matrix using hclust",
+    "text": "5.7 Reordering a correlation matrix using hclust\ncorrplot() can draw rectangles around the corrgram based on the results of hierarchical clustering by using hclust\n\n\nCode\ncorrplot(wine.cor, \n         method = \"ellipse\", \n         tl.pos = \"lt\",\n         tl.col = \"black\",\n         order=\"hclust\",\n         hclust.method = \"ward.D\",\n         addrect = 3)"
+  },
+  {
+    "objectID": "project/EDA_brooke.html",
+    "href": "project/EDA_brooke.html",
+    "title": "Project EDA",
+    "section": "",
+    "text": "Installing R packages\n\npacman::p_load(tidyverse, haven, ggrepel, patchwork,ggplot2, \n               ggthemes, hrbrthemes,dplyr,tidyr,knitr,ggridges,lubridate)\n\n\n\nImporting data\n\nPollution &lt;- read_csv(\"data/pollutants_singapore.csv\") %&gt;%\n  select(Area,date,pm25,psi)\n\nRows: 18390 Columns: 9\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (2): Area, date\ndbl (7): pm25, pm10, o3, no2, so2, co, psi\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n\n\nweather &lt;- read_csv(\"data/weather_singapore_2014_to_2017.csv\", locale = locale(encoding = \"ISO-8859-1\"))\n\nRows: 7305 Columns: 14\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (11): Area, Station, Daily Rainfall Total (mm), Highest 30 Min Rainfall ...\ndbl  (3): Year, Month, Day\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nweather &lt;- weather %&gt;%\n  mutate(date = make_date(Year, Month, Day))\n\n\n\nData structure\n\nglimpse(Pollution)\n\nRows: 18,390\nColumns: 4\n$ Area &lt;chr&gt; \"Central\", \"Central\", \"Central\", \"Central\", \"Central\", \"Central\",…\n$ date &lt;chr&gt; \"2024/2/1\", \"2024/2/2\", \"2024/2/3\", \"2024/1/1\", \"2024/1/2\", \"2024…\n$ pm25 &lt;dbl&gt; 46, 48, 46, 35, 25, 37, 26, 26, 31, 24, 34, 26, 25, 46, 24, 50, 4…\n$ psi  &lt;dbl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, N…\n\n\n\n\nchecking duplicates\n\nPollution[duplicated(Pollution),]\n\n# A tibble: 0 × 4\n# ℹ 4 variables: Area &lt;chr&gt;, date &lt;chr&gt;, pm25 &lt;dbl&gt;, psi &lt;dbl&gt;\n\n\n\n\nMissing values\n\nna_count &lt;- sapply(Pollution, function(y) sum(length(which(is.na(y)))))\n\nna_count\n\n Area  date  pm25   psi \n    0     0   157 13360 \n\n\n\nna_count_w &lt;- sapply(weather, function(y) sum(length(which(is.na(y)))))\n\nzero_count_w &lt;- sapply(weather, function(y) sum(y == 0, na.rm = TRUE))\nzero_count_w\n\n                         Area                       Station \n                            0                             0 \n                         Year                         Month \n                            0                             0 \n                          Day     Daily Rainfall Total (mm) \n                            0                           281 \n Highest 30 Min Rainfall (mm)  Highest 60 Min Rainfall (mm) \n                          312                           312 \nHighest 120 Min Rainfall (mm)         Mean Temperature (°C) \n                          312                             0 \n     Maximum Temperature (°C)      Minimum Temperature (°C) \n                            0                             0 \n       Mean Wind Speed (km/h)         Max Wind Speed (km/h) \n                            0                             0 \n                         date \n                            0 \n\n\n\n\ndrop missing values\n\nPollution_v2 &lt;- Pollution %&gt;%\n  drop_na()\n\nsum(is.na(Pollution_v2))\n\n[1] 0\n\n\n\n\nConverting data type\n\npollutants &lt;- Pollution %&gt;%\n  mutate(date = trimws(date), # Remove any leading/trailing whitespace\n         date = as.Date(date, format=\"%Y/%m/%d\")) # Convert to Date\n\n\n\nsummary\n\nsummary(pollutants)\n\n     Area                date                 pm25             psi        \n Length:18390       Min.   :2013-12-31   Min.   : 13.00   Min.   : 13.00  \n Class :character   1st Qu.:2016-07-10   1st Qu.: 38.00   1st Qu.: 43.00  \n Mode  :character   Median :2019-01-19   Median : 48.00   Median : 51.00  \n                    Mean   :2019-01-18   Mean   : 50.79   Mean   : 53.74  \n                    3rd Qu.:2021-07-29   3rd Qu.: 59.00   3rd Qu.: 59.00  \n                    Max.   :2024-02-03   Max.   :267.00   Max.   :240.00  \n                                         NA's   :157      NA's   :13360   \n\n\n\n\n\n\n#  filter the data for the area \"Central\"\ncentral_pollution &lt;- pollutants %&gt;%\n  filter(Area == \"Central\")\n\nwest_pollution &lt;- pollutants %&gt;%\n  filter(Area == \"West\")\n\nnorth_pollution &lt;- pollutants %&gt;%\n  filter(Area == \"North\")\n\nsouth_pollution &lt;- pollutants %&gt;%\n  filter(Area == \"South\")\n\neast_pollution &lt;- pollutants %&gt;%\n  filter(Area == \"East\")\n\n\nPM 2.5 concentration across areasMerge graphPM 2.5 by yearPM 2.5 concentration for each area\n\n\n\nggplot(data = pollutants, aes(x = date, y = pm25, color = Area)) +\n  geom_line() +\n  theme_minimal() +\n  labs(title = \"Time Series of PM2.5 Across Different Areas\",\n       x = \"Date\",\n       y = \"PM2.5 Concentration\",\n       color = \"Area\")\n\nWarning: Removed 5 rows containing missing values (`geom_line()`).\n\n\n\n\n\n\n\n\n# Merge the datasets by 'Area' and the new 'date' column\ncombined_data &lt;- merge(pollutants, weather, by = c(\"date\", \"Area\"))\n\n\n# Create the plot\np &lt;- ggplot(data = combined_data, aes(x = date, y = pm25, color = Area)) +\n  geom_line() +\n  facet_wrap(~ Area, scales = 'free_y') +\n  theme_minimal() +\n  labs(title = \"Time Series of PM2.5 and Rainfall Across Different Areas\",\n       x = \"Date\",\n       y = \"Concentration / Rainfall\")\n\n\n\n\n# Convert the date to a Date object and extract the year\npollutants_yr &lt;- pollutants %&gt;%\n  mutate(date = as.Date(date),\n         year = factor(year(date)))\n\n# Calculate the average PM2.5 for each area for each year\nannual_avg_pm25 &lt;- pollutants_yr %&gt;%\n  group_by(Area, year) %&gt;%\n  summarise(annual_avg_pm25 = mean(pm25, na.rm = TRUE))\n\n`summarise()` has grouped output by 'Area'. You can override using the\n`.groups` argument.\n\nprint(annual_avg_pm25)\n\n# A tibble: 60 × 3\n# Groups:   Area [5]\n   Area    year  annual_avg_pm25\n   &lt;chr&gt;   &lt;fct&gt;           &lt;dbl&gt;\n 1 Central 2013            NaN  \n 2 Central 2014             60.1\n 3 Central 2015             63.8\n 4 Central 2016             51.5\n 5 Central 2017             47.2\n 6 Central 2018             54.1\n 7 Central 2019             56.2\n 8 Central 2020             43.4\n 9 Central 2021             49.3\n10 Central 2022             43.2\n# ℹ 50 more rows\n\n\n\n# Plot the annual average PM2.5 by area\nggplot(data = annual_avg_pm25, aes(x = year, y = annual_avg_pm25, color = Area)) +\n  geom_line() +\n  scale_x_discrete() +  # This forces the x-axis to be discrete\n  theme_minimal() +\n  labs(title = \"Annual Average PM2.5 Concentration Across Different Areas\",\n       x = \"Year\",\n       y = \"Annual Average PM2.5 Concentration\",\n       color = \"Area\")\n\nWarning: Removed 5 rows containing missing values (`geom_line()`).\n\n\n`geom_line()`: Each group consists of only one observation.\nℹ Do you need to adjust the group aesthetic?\n\n\n\n\n\n\n\n\nggplot(data = pollutants, aes(x = date, y = pm25, color = Area)) +\n  geom_line() +\n  theme_minimal() +\n  facet_wrap(~ Area, scales = 'free_y') +  # Add faceting by area\n  labs(title = \"Time Series of PM2.5 Across Different Areas\",\n       x = \"Date\",\n       y = \"PM2.5 Concentration\")\n\nWarning: Removed 5 rows containing missing values (`geom_line()`).\n\n\n\n\n\n\nggplot(data = Pollution, aes(x = Area, y = pm25)) +\n  geom_boxplot() +\n  labs(title = \"Boxplot of PM2.5 Concentrations by Area\",\n       x = \"Area\",\n       y = \"PM2.5 Concentration\")+\n  stat_summary(geom = \"point\",       \n               fun.y=\"mean\",         \n               colour =\"red\",        \n               size=2)\n\nWarning: The `fun.y` argument of `stat_summary()` is deprecated as of ggplot2 3.3.0.\nℹ Please use the `fun` argument instead.\n\n\nWarning: Removed 157 rows containing non-finite values (`stat_boxplot()`).\n\n\nWarning: Removed 157 rows containing non-finite values (`stat_summary()`).\n\n\n\n\n  scale_y_continuous(limits = c(0, 300))\n\n&lt;ScaleContinuousPosition&gt;\n Range:  \n Limits:    0 --  300"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "",
+    "text": "In this exercise, we will use seriation, heatmaply, dendextend and tidyverse in RStudio.\n\nLoading R packageImporting DataPreparing DataTransforming Data\n\n\nThe code chunk below uses p_load() of pacman package to check if these packages are installed in the computer and load them onto your working R environment.\n\npacman::p_load(seriation, dendextend, heatmaply, tidyverse)\n\n\n\nThe code chunk below imports the data into R environment by using read_csv() function of readr package.\n\nwh &lt;- read_csv(\"data/WHData-2018.csv\")\n\n\n\nWe need to change the rows by country name instead of row number by using the code chunk below\n\nrow.names(wh) &lt;- wh$Country\n\n\n\nThe code chunk below will be used to transform wh data frame into a data matrix.\n\nwh1 &lt;- dplyr::select(wh, c(3, 7:12))\nwh_matrix &lt;- data.matrix(wh)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#heatmap-of-r-stats",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#heatmap-of-r-stats",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "2.1 heatmap() of R Stats",
+    "text": "2.1 heatmap() of R Stats\nWe will plot a heatmap by using heatmap() of Base Stats. The code chunk is given below.\n\nwh_heatmap &lt;- heatmap(wh_matrix,\n                      Rowv=NA, Colv=NA)\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\nBy default, heatmap() plots a cluster heatmap. The arguments Rowv=NA and Colv=NA are used to switch off the option of plotting the row and column dendrograms.\n\n\n\nTo plot a cluster heatmap, we just have to use the default as shown in the code chunk below.\n\nwh_heatmap &lt;- heatmap(wh_matrix)\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\nThe order of both rows and columns is different compare to the native wh_matrix. This is because heatmap do a reordering using clusterisation: it calculates the distance between each pair of rows and columns and try to order them by similarity. Moreover, the corresponding dendrogram are provided beside the heatmap.\n\n\n\nThe code chunk below normalizes the matrix column-wise.\n\nwh_heatmap &lt;- heatmap(wh_matrix,\n                      scale=\"column\",\n                      cexRow = 0.6, \n                      cexCol = 0.8,\n                      margins = c(10, 4))\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\nNotice that the values are scaled now. Also note that margins argument is used to ensure that the entire x-axis labels are displayed completely and, cexRow and cexCol arguments are used to define the font size used for y-axis and x-axis labels respectively."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#working-with-heatmaply",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#working-with-heatmaply",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.1 Working with heatmaply",
+    "text": "3.1 Working with heatmaply\n\nheatmaply(mtcars)\n\n\n\n\n\nThe code chunk below shows the basic syntax needed to create n interactive heatmap by using heatmaply package.\n\nheatmaply(wh_matrix[, -c(1, 2, 4, 5)],\n          cexRow = 0.4,\n          cexCol = 0.8,\n          margins = c(10, 10))\n\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\n\nDifferent from heatmap(), for heatmaply() the default horizontal dendrogram is placed on the left hand side of the heatmap.\nThe text label of each raw, on the other hand, is placed on the right hand side of the heat map.\nWhen the x-axis marker labels are too long, they will be rotated by 135 degree from the north."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#data-trasformation",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#data-trasformation",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.2 Data trasformation",
+    "text": "3.2 Data trasformation\nThere are three main data transformation methods supported by heatmaply() which are scale, normalize and percentilse.\n\n3.2.1 Scaling method\nThe code chunk below is used to scale variable values columewise.\n\nheatmaply(wh_matrix[, -c(1, 2, 4, 5)],\n          scale = \"column\")\n\n\n\n\n\n\n\n3.2.2 Normalizing method\nDifferent from Scaling, the normalize method is performed on the input data set i.e. wh_matrix as shown in the code chunk below.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]))\n\n\n\n\n\n\n\n3.2.3 Percentizing method\nSimilar to Normalize method, the Percentize method is also performed on the input data set i.e. wh_matrix as shown in the code chunk below.\n\nheatmaply(percentize(wh_matrix[, -c(1, 2, 4, 5)]))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#clustering-algorithm",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#clustering-algorithm",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.3 Clustering algorithm",
+    "text": "3.3 Clustering algorithm\nheatmaply supports a variety of hierarchical clustering algorithm. The main arguments provided are:\n\ndistfun: function used to compute the distance (dissimilarity) between both rows and columns. Defaults to dist. The options “pearson”, “spearman” and “kendall” can be used to use correlation-based clustering, which uses as.dist(1 - cor(t(x))) as the distance metric (using the specified correlation method).\nhclustfun: function used to compute the hierarchical clustering when Rowv or Colv are not dendrograms. Defaults to hclust.\ndist_method default is NULL, which results in “euclidean” to be used. It can accept alternative character strings indicating the method to be passed to distfun. By default distfun is “dist”” hence this can be one of “euclidean”, “maximum”, “manhattan”, “canberra”, “binary” or “minkowski”.\nhclust_method default is NULL, which results in “complete” method to be used. It can accept alternative character strings indicating the method to be passed to hclustfun. By default hclustfun is hclust hence this can be one of “ward.D”, “ward.D2”, “single”, “complete”, “average” (= UPGMA), “mcquitty” (= WPGMA), “median” (= WPGMC) or “centroid” (= UPGMC)."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#manual-approach",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#manual-approach",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.4 Manual approach",
+    "text": "3.4 Manual approach\nIn the code chunk below, the heatmap is plotted by using hierachical clustering algorithm with “Euclidean distance” and “ward.D” method\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          dist_method = \"euclidean\",\n          hclust_method = \"ward.D\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#statistical-approach",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#statistical-approach",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.5 Statistical approach",
+    "text": "3.5 Statistical approach\nIn order to determine the best clustering method and number of cluster the dend_expend() and find_k() functions of dendextend package will be used.\nFirst, the dend_expend() will be used to determine the recommended clustering method to be used.\n\nwh_d &lt;- dist(normalize(wh_matrix[, -c(1, 2, 4, 5)]), method = \"euclidean\")\ndend_expend(wh_d)[[3]]\n\n  dist_methods hclust_methods     optim\n1      unknown         ward.D 0.6137851\n2      unknown        ward.D2 0.6289186\n3      unknown         single 0.4774362\n4      unknown       complete 0.6434009\n5      unknown        average 0.6701688\n6      unknown       mcquitty 0.5020102\n7      unknown         median 0.5901833\n8      unknown       centroid 0.6338734\n\n\nThe output table shows that “average” method should be used because it gave the high optimum value.\nNext, find_k() is used to determine the optimal number of cluster.\n\nwh_clust &lt;- hclust(wh_d, method = \"average\")\nnum_k &lt;- find_k(wh_clust)\nplot(num_k)\n\n\n\n\nWith reference to the statistical analysis results, we can prepare the code chunk as shown below\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          dist_method = \"euclidean\",\n          hclust_method = \"average\",\n          k_row = 3)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#seriation",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#seriation",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.6 Seriation",
+    "text": "3.6 Seriation\nheatmaply uses the seriation package to find an optimal ordering of rows and columns. Optimal means to optimize the Hamiltonian path length that is restricted by the dendrogram structure.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"OLO\")\n\n\n\n\n\nThe default options is “OLO” (Optimal leaf ordering) which optimizes the above criterion (in O(n^4)). Another option is “GW” (Gruvaeus and Wainer) which aims for the same goal but uses a potentially faster heuristic.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"GW\")\n\n\n\n\n\nThe option “mean” gives the output we would get by default from heatmap functions in other packages such as gplots::heatmap.2.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"mean\")\n\n\n\n\n\nThe option “none” gives us the dendrograms without any rotation that is based on the data matrix.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"none\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#working-with-colour-palettes",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#working-with-colour-palettes",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.7 Working with colour palettes",
+    "text": "3.7 Working with colour palettes\nThe default colour palette uses by heatmaply is viridis. heatmaply users, however, can use other colour palettes in order to improve the aestheticness and visual friendliness of the heatmap.\nIn the code chunk below, the Reds color palette of rColorBrewer is used.\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          seriate = \"none\",\n          colors = Reds)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#the-finishing-touch",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5c.html#the-finishing-touch",
+    "title": "Hands-on Exercise 5c: Heatmap for Visualising and Analysing Multivariate Data",
+    "section": "3.8 The finishing touch",
+    "text": "3.8 The finishing touch\nIn the code chunk below the following arguments are used:\n\nk_row is used to produce 5 groups.\nmargins is used to change the top margin to 60 and row margin to 200.\nfontsizw_row and fontsize_col are used to change the font size for row and column labels to 4.\nmain is used to write the main title of the plot.\nxlab and ylab are used to write the x-axis and y-axis labels respectively.\n\n\nheatmaply(normalize(wh_matrix[, -c(1, 2, 4, 5)]),\n          Colv=NA,\n          seriate = \"none\",\n          colors = Reds,\n          k_row = 5,\n          margins = c(NA,200,60,NA),\n          fontsize_row = 4,\n          fontsize_col = 5,\n          main=\"World Happiness Score and Variables by Country, 2018 \\nDataTransformation using Normalise Method\",\n          xlab = \"World Happiness Indicators\",\n          ylab = \"World Countries\"\n          )"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "",
+    "text": "In this exercise, we will use the following our R packages.\n\nggparcoord() of GGally package to plot statistic parallel coordinates plot,\nparcoords package to plot interactive parallel coordinates plots, and\nparallelPlot package to plot interactive parallel coordinates plots.\n\n\nLoading R packageImporting Data\n\n\nThe code chunk below uses p_load() of pacman package to check if these packages are installed in the computer and load them onto your working R environment.\n\npacman::p_load(GGally, parallelPlot, tidyverse)\n\n\n\nThe code chunk below imports WHData-2018.csv into R environment by using read_csv() function of readr package.\n\nwh &lt;- read_csv(\"data/WHData-2018.csv\")"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#a-simple-parallel-coordinates",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#a-simple-parallel-coordinates",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "2.1 A simple parallel coordinates",
+    "text": "2.1 A simple parallel coordinates\nCode chunk below shows a typical syntax used to plot a basic static parallel coordinates plot by using ggparcoord().\n\nggparcoord(data = wh, \n           columns = c(7:12))\n\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nNotice that only two argument namely data and columns is used. Data argument is used to map the data object (i.e. wh) and columns is used to select the columns for preparing the parallel coordinates plot."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#a-parallel-coordinates-with-boxplot",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#a-parallel-coordinates-with-boxplot",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "2.2 A parallel coordinates with boxplot",
+    "text": "2.2 A parallel coordinates with boxplot\nThe basic parallel coordinates failed to reveal any meaning understanding of the World Happiness measures. In this section, ggparcoord() will be used to makeover the plot.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Parallel Coordinates Plot of World Happines Variables\")\n\n\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above\n\n\n\n\ngroupColumn argument is used to group the observations (i.e. parallel lines) by using a single variable (i.e. Region) and colour the parallel coordinates lines by region name.\nscale argument is used to scale the variables in the parallel coordinate plot by using uniminmax method. The method univariately scale each variable so the minimum of the variable is zero and the maximum is one.\nalphaLines argument is used to reduce the intensity of the line color to 0.2. The permissible value range is between 0 to 1.\nboxplot argument is used to turn on the boxplot by using logical TRUE. The default is FALSE.\ntitle argument is used to provide the parallel coordinates plot a title."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#parallel-coordinates-with-facet",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#parallel-coordinates-with-facet",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "2.3 Parallel coordinates with facet",
+    "text": "2.3 Parallel coordinates with facet\nIn the code chunk below, facet_wrap() of ggplot2 is used to plot 10 small multiple parallel coordinates plots. Each plot represent one geographical region such as East Asia.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#rotating-x-axis-text-label",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#rotating-x-axis-text-label",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "2.4 Rotating x-axis text label",
+    "text": "2.4 Rotating x-axis text label\nWe can rotate axis text labels using theme() function in ggplot2 as shown in the code chunk below.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region) + \n  theme(axis.text.x = element_text(angle = 30))\n\n\n\n\n\n\n\n\n\n\nThings to learn from the code chunk above\n\n\n\n\nTo rotate x-axis text labels, we use axis.text.x as argument to theme() function. And we specify element_text(angle = 30) to rotate the x-axis text by an angle 30 degree."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#adjusting-the-rotated-x-axis-text-label",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#adjusting-the-rotated-x-axis-text-label",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "2.5 Adjusting the rotated x-axis text label",
+    "text": "2.5 Adjusting the rotated x-axis text label\nRotating x-axis text labels to 30 degrees makes the label overlap with the plot and we can avoid this by adjusting the text location using hjust argument to theme’s text element with element_text(). We use axis.text.x as we want to change the look of x-axis text.\n\nggparcoord(data = wh, \n           columns = c(7:12), \n           groupColumn = 2,\n           scale = \"uniminmax\",\n           alphaLines = 0.2,\n           boxplot = TRUE, \n           title = \"Multiple Parallel Coordinates Plots of World Happines Variables by Region\") +\n  facet_wrap(~ Region) + \n  theme(axis.text.x = element_text(angle = 30, hjust=1))"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#the-basic-plot",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#the-basic-plot",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "3.1 The basic plot",
+    "text": "3.1 The basic plot\nThe code chunk below plot an interactive parallel coordinates plot by using parallelPlot().\n\nwh &lt;- wh %&gt;%\n  select(\"Happiness score\", c(7:12))\nparallelPlot(wh,\n             width = 320,\n             height = 250)"
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#section",
+    "href": "Hands-on_Ex/Hands-on_Ex5/Hands-on_Ex5d.html#section",
+    "title": "Hands-on Exercise 5d: Visual Multivariate Analysis with Parallel Coordinates Plot",
+    "section": "3.2",
+    "text": "3.2"
   }
 ]
