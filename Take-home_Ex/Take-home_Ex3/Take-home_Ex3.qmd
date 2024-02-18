@@ -1,0 +1,269 @@
+---
+title: "Take-home Exercise 3: Be Weatherwise or Otherwise"
+date: February 17,2024
+date-modified: "last-modified"
+toc: true
+execute: 
+  eval: true
+  echo: true
+  warning: false
+code-fold: false
+code-summary: "Show the code"
+---
+
+# 1 Overview
+
+According to an office report as shown in the info graphic below,
+
+-   Daily mean temperature are projected to increase by 1.4 to 4.6, and
+
+-   The contrast between the wet months (November to January) and dry month (February and June to September) is likely to be more pronounced.
+
+![](photo/Climate_change.jpg)
+
+# 2 The Task
+
+In this take-home exercise, we are required to:
+
+-   Select a weather station and download [historical daily temperature or rainfall data](http://www.weather.gov.sg/climate-historical-daily/) from [Meteorological Service Singapore](http://www.weather.gov.sg/home/) website,
+
+-   Select either daily temperature or rainfall records of a month of the year 1983, 1993, 2003, 2013 and 2023 and create an analytics-driven data visualization,
+
+-   Apply appropriate interactive techniques to enhance the user experience in data discovery and/or visual story-telling.
+
+# 3 Data Preparation
+
+## 3.1 Installing R packages
+
+The code chunk below uses `p_load()` of **pacman** package to check if multiple packages are installed in the computer. If they are, then they will be launched into R.
+
+```{r}
+pacman::p_load(readr,tidyverse, patchwork,ggplot2,ggthemes,
+               hrbrthemes,dplyr,ggridges,ggdist,plotly,crosstalk,DT)
+```
+
+## 3.2 Importing Data
+
+The dataset for November, representing the wet season, and February, representing the dry season, for the years 1983, 1993, 2003, 2013, and 2023 at Changi has been chosen for analysis.
+
+The code chunk below imports all data into R environment by using `read_csv()` function of readr package.
+
+```{r}
+Nov23_data <- read_csv("data/DAILYDATA_S24_202311.csv", locale = locale(encoding = "ISO-8859-4"))
+Nov13_data <- read_csv("data/DAILYDATA_S24_201311.csv", locale = locale(encoding = "ISO-8859-4"))
+Nov03_data <- read_csv("data/DAILYDATA_S24_200311.csv", locale = locale(encoding = "ISO-8859-4"))
+Nov93_data <- read_csv("data/DAILYDATA_S24_199311.csv", locale = locale(encoding = "ISO-8859-4"))
+Nov83_data <- read_csv("data/DAILYDATA_S24_198311.csv", locale = locale(encoding = "ISO-8859-4"))
+
+
+Feb23_data <- read_csv("data/DAILYDATA_S24_202302.csv", locale = locale(encoding = "ISO-8859-4"))
+Feb13_data <- read_csv("data/DAILYDATA_S24_201302.csv", locale = locale(encoding = "ISO-8859-4"))
+Feb03_data <- read_csv("data/DAILYDATA_S24_200302.csv", locale = locale(encoding = "ISO-8859-4"))
+Feb93_data <- read_csv("data/DAILYDATA_S24_199302.csv", locale = locale(encoding = "ISO-8859-4"))
+Feb83_data <- read_csv("data/DAILYDATA_S24_198302.csv", locale = locale(encoding = "ISO-8859-4"))
+```
+
+## 3.3 Combining Data
+
+In this section, we will combine all data from different year and rename column daily rainfall total (mm).
+
+```{r}
+#combining November data
+combinedNov_rainfall <- bind_rows(Nov23_data,Nov13_data,Nov03_data,Nov93_data,Nov83_data)
+
+combinedNov_rainfall <- combinedNov_rainfall %>%
+  select(Year,Month,Day,`Daily Rainfall Total (mm)`)%>%
+  rename("daily_rainfall" = `Daily Rainfall Total (mm)`)
+
+#combining February data
+combinedFeb_rainfall <- bind_rows(Feb23_data,Feb13_data,Feb03_data,Feb93_data,Feb83_data)
+
+combinedFeb_rainfall <- combinedFeb_rainfall %>%
+  select(Year,Month,Day,`Daily Rainfall Total (mm)`)%>%
+  rename("daily_rainfall" = `Daily Rainfall Total (mm)`)
+```
+
+## 3.4 Wrangling Data
+
+In this section, we will calculate mean and median rainfall in November for each year.
+
+```{r}
+Nov_mean <- combinedNov_rainfall %>%
+  group_by(Year) %>%
+  summarise(meanNov_rainfall = round(mean(daily_rainfall, na.rm = TRUE), 2))
+
+Nov_median <- combinedNov_rainfall %>%
+  group_by(Year) %>%
+  summarise(medianNov_rainfall = round(median(daily_rainfall, na.rm = TRUE), 2))
+
+Feb_mean <- combinedFeb_rainfall %>%
+  group_by(Year) %>%
+  summarise(meanFeb_rainfall = round(mean(daily_rainfall, na.rm = TRUE), 2))
+
+Feb_median <- combinedFeb_rainfall %>%
+  group_by(Year) %>%
+  summarise(medianFeb_rainfall = round(median(daily_rainfall, na.rm = TRUE), 2))
+
+```
+
+## 3.5 Summarizing Data
+
+A statistical summary of final datasets by using summary()
+
+[November rainfall data]{.underline}
+
+```{r}
+summary(combinedNov_rainfall)
+```
+
+[February rainfall data]{.underline}
+
+```{r}
+summary(combinedFeb_rainfall)
+```
+
+# 4 Data Visualization
+
+## 4.1 Distribution of Daily Rainfall
+
+The below ridge plots illustrate the distribution of daily rainfall in November and February across various years at Changi.
+
+```{r}
+#| fig-width: 18
+#| fig-height: 9
+p1 <- ggplot(combinedNov_rainfall, 
+       aes(x = daily_rainfall, y = factor(Year))) +
+  geom_density_ridges(fill = "lightblue") +
+  labs(title = "Distribution of Daily Rainfall in November between 1983-2023",
+    x = "Daily Rainfall (mm)",
+    y = "Year") +
+  theme_ridges()+
+  theme(legend.position = "none")
+
+p2 <- ggplot(combinedFeb_rainfall, 
+       aes(x = daily_rainfall, y = factor(Year))) +
+  geom_density_ridges(fill = "#FEC26B") +
+  labs(title = "Distribution of Daily Rainfall in February between 1983-2023",
+    x = "Daily Rainfall (mm)",
+    y = "Year") +
+  theme_ridges()+
+  theme(legend.position = "none")
+
+p1+p2
+```
+
+::: callout-note
+## Observation
+
+Based on the plots, we can observe the following:
+
+-   There is higher rainfall in wet season which is in November. The peaks are broader and the tail extend further to the right that indicate the higher daily rainfall amounts.
+
+-   The frequency of daily rainfall amount in February tend to be close to 0 mm which indicate that there are many days with little to no rain.
+
+-   Both distributions are right-skewed. However, skewness is more evident in February as it is the dry season.
+
+-   The intensity of rainfall is generally greater in November than in February. This aligns with the characterization of these months as wet and dry seasons.
+:::
+
+## 4.2 Interactive Visualization
+
+The interactive plots illustrate daily rainfall in November and February across various years at Changi
+
+```{r}
+#| code-fold: true
+p3 <- ggplot(combinedNov_rainfall, aes(x = Year, y = daily_rainfall)) +
+  geom_point(aes(color = `daily_rainfall`,
+                 text = paste('Year:', Year,'Day:', Day,
+                              'Rainfall:',daily_rainfall)),
+             size=2.5) +
+  labs(title = "Daily Rainfall in November: from 1983 to 2023",
+       x = "Year",
+       y = "Daily Rainfall Total (mm)") +
+  theme_minimal() +
+  geom_line(data = Nov_mean, aes(x = Year, y = meanNov_rainfall), 
+            color = "red", 
+            size = 0.3, 
+            linetype = "dashed") + 
+  geom_point(data = Nov_mean, aes(x = Year, y = meanNov_rainfall), 
+             color = "red", 
+             size = 2.5) +
+  annotate("text", x = 2000, y = 8, 
+           label = "Mean", 
+           color = "red",
+           size=3)+
+  geom_line(data = Nov_median, aes(x = Year, y = medianNov_rainfall), 
+            color = "purple", 
+            size = 0.3, 
+            linetype = "dashed") + 
+  geom_point(data = Nov_median, aes(x = Year, y = medianNov_rainfall), 
+             color = "purple", 
+             size = 2.5) +
+  annotate("text", x = 2000, y = 3, 
+           label = "Median", 
+           color = "purple",
+           size= 3)+
+  scale_x_continuous(breaks = seq(1983, 2023, by = 10)) +
+  scale_color_gradient(low = "lightblue", high = "blue")
+
+
+ggplotly(p3, tooltip = "text") %>%
+  layout(hovermode = 'closest') %>%
+  config(displayModeBar = FALSE)
+```
+
+```{r}
+#| code-fold: true
+p4 <- ggplot(combinedFeb_rainfall, aes(x = Year, y = daily_rainfall)) +
+  geom_point(aes(color = `daily_rainfall`,
+                 text = paste('Year:', Year,'Day:', Day,
+                              'Rainfall:',daily_rainfall)),
+             size=2.5) +
+  labs(title = "Daily Rainfall in February: from 1983 to 2023",
+       x = "Year",
+       y = "Daily Rainfall Total (mm)") +
+  theme_minimal() +
+  geom_line(data = Feb_mean, aes(x = Year, y = meanFeb_rainfall), 
+            color = "red", 
+            size = 0.3, 
+            linetype = "dashed") + 
+  geom_point(data = Feb_mean, aes(x = Year, y = meanFeb_rainfall), 
+             color = "red", 
+             size = 2.5) +
+  annotate("text", x = 2000, y = 8, 
+           label = "Mean", 
+           color = "red",
+           size=3)+
+  geom_line(data = Feb_median, aes(x = Year, y = medianFeb_rainfall), 
+            color = "purple", 
+            size = 0.3, 
+            linetype = "dashed") + 
+  geom_point(data = Feb_median, aes(x = Year, y = medianFeb_rainfall), 
+             color = "purple", 
+             size = 2.5) +
+  annotate("text", x = 2000, y = 3, 
+           label = "Median", 
+           color = "purple",
+           size= 3)+
+  scale_x_continuous(breaks = seq(1983, 2023, by = 10)) +
+  scale_color_gradient(low = "lightblue", high = "blue")
+
+
+ggplotly(p4, tooltip = "text") %>%
+  layout(hovermode = 'closest') %>%
+  config(displayModeBar = FALSE)
+```
+
+::: callout-note
+## Observation
+
+Based on the two plots for daily rainfall in November (wet season) and February (dry season) from 1983 to 2023, the following observations can be made:
+
+-   There is a greater number of days with recorded rainfall in November as it shows from the denser clustering of points above zero. While in February, it has more record of no or very low rainfall as many points at or near zero. This reflects dry season.
+
+-   In November, the data are spread out with several instances of moderate to high rainfall, but in February, it shows fewer instances of rainfall.
+
+-   Neither month shows a clear trend in the mean or median rainfall over the 40-year span. This can indicate stability in the overall rainfall patterns for both the wet and dry seasons.
+
+-   The extreme values in February are notably higher than those in November, which is unexpected given that February is the dry season. The is due to a monsoon surge, a strengthening of winds over the South China Sea. This results extensive rain clouds to form over the surrounding region, as reported by ([CNA website](https://www.channelnewsasia.com/singapore/wettest-february-day-singapore-rain-feb-28-met-service-weather-march-3315141)).
+:::
