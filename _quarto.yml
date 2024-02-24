@@ -48,14 +48,6 @@ website:
         menu:
           - text: In-class Exercise 1
             href: In-class_Ex/In-class_Ex1/In-class_Ex1.html
-          - text: In-class Exercise 2
-            href: In-class_Ex/In-class_Ex2/In-class_Ex2.html          
-          - text: In-class Exercise 3
-            href: In-class_Ex/In-class_Ex3/In-class_Ex3.html
-          - text: In-class Exercise 4
-            href: In-class_Ex/In-class_Ex4/In-class_Ex4.html
-          - text: In-class Exercise 5
-            href: In-class_Ex/In-class_Ex5/In-class_Ex5.html
           - text: In-class Exercise 6
             href: In-class_Ex/In-class_Ex6/In-class_Ex6.html
           - text: In-class Exercise 7
