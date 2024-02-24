@@ -292,7 +292,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#getting-started" id="toc-getting-started" class="nav-link active" data-scroll-target="#getting-started">1 Getting Started</a></li>
-  <li><a href="#building-the-calendar-heatmaps" id="toc-building-the-calendar-heatmaps" class="nav-link" data-scroll-target="#building-the-calendar-heatmaps">2 Building the Calendar Heatmaps</a></li>
+  <li><a href="#calendar-heatmaps" id="toc-calendar-heatmaps" class="nav-link" data-scroll-target="#calendar-heatmaps">2 Calendar Heatmaps</a></li>
   <li><a href="#multiple-calendar-heatmaps" id="toc-multiple-calendar-heatmaps" class="nav-link" data-scroll-target="#multiple-calendar-heatmaps">3 Multiple Calendar Heatmaps</a>
   <ul class="collapse">
   <li><a href="#deriving-attack-by-country-object" id="toc-deriving-attack-by-country-object" class="nav-link" data-scroll-target="#deriving-attack-by-country-object">3.1 Deriving attack by country object</a></li>
@@ -338,7 +338,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Modified</div>
     <div class="quarto-title-meta-contents">
-      <p class="date-modified">February 22, 2024</p>
+      <p class="date-modified">February 24, 2024</p>
     </div>
   </div>
     
@@ -544,8 +544,8 @@ Note
 </div>
 </div>
 </section>
-<section id="building-the-calendar-heatmaps" class="level1">
-<h1>2 Building the Calendar Heatmaps</h1>
+<section id="calendar-heatmaps" class="level1">
+<h1>2 Calendar Heatmaps</h1>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>grouped <span class="ot">&lt;-</span> attacks <span class="sc">%&gt;%</span> </span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(wkday, hour) <span class="sc">%&gt;%</span> </span>
@@ -743,7 +743,7 @@ Things to learn from the code chunk
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">newggslopegraph</span>(Year, Yield, Country,</span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">Title =</span> <span class="st">"Rice Yield of Top 11 Asian Counties"</span>,</span>
 <span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>                <span class="at">SubTitle =</span> <span class="st">"1961-1980"</span>,</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">Caption =</span> <span class="st">"Prepared by: Kanyapak Buathang"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">Caption =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="Hands-on_Ex6_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid" width="672"></p>
 </div>

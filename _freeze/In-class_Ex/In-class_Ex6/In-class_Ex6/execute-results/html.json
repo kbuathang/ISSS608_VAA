@@ -1,0 +1,16 @@
+{
+  "hash": "a9f0e1c4ce91800981298c0405186ed5",
+  "result": {
+    "markdown": "---\ntitle: \"Horizon Plot\"\nauthor: \"Kanyapak Buathang\"\ndate: February 22,2024\ndate-modified: \"last-modified\"\ntoc: true\nexecute: \n  eval: true\n  echo: true\n  warning: false\n  freeze: true\n  message: false\ncode-fold: false\n---\n\n\n# Getting started\nThe code chunk below uses `p_load()` of pacman package to check if these packages are installed in the computer and load them onto your working R environment.\n\n::: {.cell}\n\n```{.r .cell-code}\npacman::p_load(ggHoriPlot, ggthemes, tidyverse)\n```\n:::\n\n\n## Step 1: Importing Data\n\nFor the purpose of this hands-on exercise, [Average Retail Prices Of Selected Consumer Items](https://tablebuilder.singstat.gov.sg/table/TS/M212891) will be used.\n\nUse the code chunk below to import the AVERP.csv file into R environment.\n\n\n::: {.cell}\n\n```{.r .cell-code}\naverp <- read_csv(\"data/AVERP.csv\") %>%\n  mutate(`Date` = dmy(`Date`))\n```\n:::\n\n\n## Step 2: Plotting the horizon graph\n\nNext, the code chunk below will be used to plot the horizon graph.\n\n::: {.cell}\n\n```{.r .cell-code}\n#|fig-width: 12\n#|fig-height: 10\naverp %>% \n  filter(Date >= \"2018-01-01\") %>%\n  ggplot() +\n  geom_horizon(aes(x = Date, y=Values), \n               origin = \"midpoint\", \n               horizonscale = 6)+\n  facet_grid(`Consumer Items`~.) +\n    theme_few() +\n  scale_fill_hcl(palette = 'RdBu') +\n  theme(panel.spacing.y=unit(0, \"lines\"), strip.text.y = element_text(\n    size = 5, angle = 0, hjust = 0),\n    legend.position = 'none',\n    axis.text.y = element_blank(),\n    axis.text.x = element_text(size=7),\n    axis.title.y = element_blank(),\n    axis.title.x = element_blank(),\n    axis.ticks.y = element_blank(),\n    panel.border = element_blank()\n    ) +\n    scale_x_date(expand=c(0,0), date_breaks = \"3 month\", date_labels = \"%b%y\") +\n  ggtitle('Average Retail Prices of Selected Consumer Items (Jan 2018 to Dec 2022)')\n```\n\n::: {.cell-output-display}\n![](In-class_Ex6_files/figure-html/unnamed-chunk-3-1.png){width=672}\n:::\n:::\n",
+    "supporting": [
+      "In-class_Ex6_files"
+    ],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

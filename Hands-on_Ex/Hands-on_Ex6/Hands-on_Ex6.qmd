@@ -7,6 +7,7 @@ execute:
   eval: true
   echo: true
   warning: false
+  message: false
 code-fold: false
 code-summary: "Show the code"
 ---
@@ -107,7 +108,7 @@ kable(head(attacks))
 ```
 :::
 
-# 2 Building the Calendar Heatmaps
+# 2 Calendar Heatmaps
 
 ```{r}
 grouped <- attacks %>% 
@@ -284,15 +285,19 @@ ggplot() +
 ```
 
 # 5 Slopegraph
+
 In this section we will plot a [slopegraph](https://www.storytellingwithdata.com/blog/2020/7/27/what-is-a-slopegraph) by using R.
 
 ## 5.1 Data Import
+
 Import the rice data set into R environment by using the code chunk below.
+
 ```{r}
 rice <- read_csv("data/rice.csv")
 ```
 
 ## 5.2 Plotting the slopegraph
+
 Next, code chunk below will be used to plot a basic slopegraph as shown below
 
 ```{r}
@@ -303,8 +308,9 @@ rice %>%
   newggslopegraph(Year, Yield, Country,
                 Title = "Rice Yield of Top 11 Asian Counties",
                 SubTitle = "1961-1980",
-                Caption = "Prepared by: Kanyapak Buathang")
+                Caption = NULL)
 ```
+
 ::: callout-tip
 ## Things to learn from the code chunk
 
