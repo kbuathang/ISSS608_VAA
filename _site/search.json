@@ -1516,7 +1516,7 @@
     "href": "Hands-on_Ex/Hands-on_Ex8/Hands-on_Ex8.html#changing-the-default-network-graph-theme",
     "title": "Hands-on Exercise 8: Modelling, Visualising and Analysing Network Data with R",
     "section": "4.2 Changing the Default Network Graph Theme",
-    "text": "4.2 Changing the Default Network Graph Theme\nIn this section, you will use theme_graph() to remove the x and y axes. Before your get started, it is advisable to read it’s reference guide at least once.\n\ng &lt;- ggraph(GAStech_graph) + \n  geom_edge_link(aes()) +\n  geom_node_point(aes())\n\ng + theme_graph()\n\n\n\n\n\n\n\n\n\n\nThings to Learn from the Code Chunk Above\n\n\n\n\nggraph introduces a special ggplot theme that provides better defaults for network graphs than the normal ggplot defaults. theme_graph(), besides removing axes, grids, and border, changes the font to Arial Narrow (this can be overridden).\nThe ggraph theme can be set for a series of plots with the set_graph_style() command run before the graphs are plotted or by using theme_graph() in the individual plots."
+    "text": "4.2 Changing the Default Network Graph Theme\nIn this section, we will use theme_graph() to remove the x and y axes.\n\ng &lt;- ggraph(GAStech_graph) + \n  geom_edge_link(aes()) +\n  geom_node_point(aes())\n\ng + theme_graph()\n\n\n\n\n\n\n\n\n\n\nThings to Learn from the Code Chunk Above\n\n\n\n\nggraph introduces a special ggplot theme that provides better defaults for network graphs than the normal ggplot defaults. theme_graph(), besides removing axes, grids, and border, changes the font to Arial Narrow (this can be overridden).\nThe ggraph theme can be set for a series of plots with the set_graph_style() command run before the graphs are plotted or by using theme_graph() in the individual plots."
   },
   {
     "objectID": "Hands-on_Ex/Hands-on_Ex8/Hands-on_Ex8.html#changing-the-coloring-of-the-plot",
@@ -1636,5 +1636,12 @@
     "title": "Hands-on Exercise 8: Modelling, Visualising and Analysing Network Data with R",
     "section": "7.6 Interactivity",
     "text": "7.6 Interactivity\nIn the code chunk below, visOptions() is used to incorporate interactivity features in the data visualisation.\n\nThe argument highlightNearest highlights nearest when clicking a node.\nThe argument nodesIdSelection adds an id node selection creating an HTML select element.\n\n\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %&gt;%\n  visIgraphLayout(layout = \"layout_with_fr\") %&gt;%\n  visOptions(highlightNearest = TRUE,\n             nodesIdSelection = TRUE) %&gt;%\n  visLegend() %&gt;%\n  visLayout(randomSeed = 123)\n\n\n\n\n\nVisit Option to find out more about visOption’s argument."
+  },
+  {
+    "objectID": "Hands-on_Ex/Hands-on_Ex8/Hands-on_Ex8.html#working-with-facet_edges",
+    "href": "Hands-on_Ex/Hands-on_Ex8/Hands-on_Ex8.html#working-with-facet_edges",
+    "title": "Hands-on Exercise 8: Modelling, Visualising and Analysing Network Data with R",
+    "section": "5.1 Working with facet_edges()",
+    "text": "5.1 Working with facet_edges()\nIn the code chunk below, facet_edges() is used. Before getting started, it is advisable for you to read it’s reference guide at least once.\n\nset_graph_style()\n\ng &lt;- ggraph(GAStech_graph, \n            layout = \"nicely\") + \n  geom_edge_link(aes(width=Weight), \n                 alpha=0.2) +\n  scale_edge_width(range = c(0.1, 5)) +\n  geom_node_point(aes(colour = Department), \n                  size = 2)\n\ng + facet_edges(~Weekday)"
   }
 ]
