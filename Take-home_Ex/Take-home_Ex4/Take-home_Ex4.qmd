@@ -59,19 +59,24 @@ weather <- read_rds("data/weather_imputed_11stations.rds")
 ```{r}
 summary(weather)
 ```
+```{r}
+weather$unique
 
+```
 
 # 4 Mean Temperature (°C)
 
-## 4.1 Across different stations for a specific year
+## 4.1 Across all stations for a specific year
 
 ### Exploratory Data Analysis
 
 ```{r}
+#| fig-width: 12
+
 #To filter data for the year 2021
 allstations_2021 <- weather %>%    
   group_by(Station) %>%           
-  filter(Date >= as.Date("2021-01-01") & Date <= as.Date("2021-12-31"))
+  filter(Year == 2021)
 
 
 plot_ly(data = allstations_2021,
@@ -79,18 +84,18 @@ plot_ly(data = allstations_2021,
              y = ~`Mean Temperature (°C)`,
          box = list(visible = T),
          meanline = list(visible = T, 
-                         color = "red"),
+                         color = "darkblue"),
         type = "violin",
         spanmode = 'hard',
         marker = list(opacity = 0.5, 
-                      color = 'orange',
+                      color = 'lightblue',
                       line = list(width = 0.5, 
-                                  color = 'red')), 
+                                  color = 'darkblue')), 
         scalemode = 'count',
-        color = I('orange'),  
+        color = I('lightblue'),  
         hoveron = "points+kde",
         line = list(width=1)) %>%
-layout(title = list(text = "Mean Temperature by Station in 2021"),
+layout(title = list(text = "Mean Temperature across all Stations in 2021"),
        xaxis = list(title = "Station"),
        yaxis = list(title = "Mean Temperature (°C)"))
 
@@ -110,8 +115,7 @@ H1 : Daily mean temperature in 2021 across different station are not equal
 #| fig-width: 12
 #| fig-height: 5
 
-
-ggbetweenstats(data = drop_data,
+ggbetweenstats(data = allstations_2021,
   x = Station,
   y = `Mean Temperature (°C)`,
   type="np", # for non-parametric
@@ -122,14 +126,13 @@ ggbetweenstats(data = drop_data,
   sig.level = NA,
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Mean Temperature by Station in 2021")
+  title = "Mean Temperature across all Stations")
 
 ```
 
-## 4.2 Specific station across different years
-
+## 4.2 One station across different years
+### Ang Mo Kio station
 ### Exploratory Data Analysis
-
 ```{r}
 #To filter Ang Mo Kio data
 AMK_data <- weather %>%    
@@ -137,7 +140,7 @@ AMK_data <- weather %>%
 
 ggplot(AMK_data, 
        aes(x = `Mean Temperature (°C)`, y = factor(Year))) +
-  geom_density_ridges(fill = "orange",
+  geom_density_ridges(fill = "lightblue",
                       alpha = 0.7,
                       color = "white") +
   labs(title = "Distribution of Mean Temperature in Ang Mo Kio between 2021-2023",
@@ -153,15 +156,15 @@ plot_ly(data = AMK_data,
              y = ~`Mean Temperature (°C)`,
          box = list(visible = T),
          meanline = list(visible = T, 
-                         color = "red"),
+                         color = "darkblue"),
         type = "violin",
         spanmode = 'hard',
         marker = list(opacity = 0.5, 
-                      color = 'orange',
+                      color = 'lightblue',
                       line = list(width = 0.5, 
-                                  color = 'red')), 
+                                  color = 'darkblue')), 
         scalemode = 'count',
-        color = I('orange'),  
+        color = I('lightblue'),  
         hoveron = "points+kde",
         line = list(width=1)) %>%
 layout(title = list(text = "Mean Temperature in Ang Mo Kio between 2021-2023"),
@@ -195,8 +198,197 @@ ggbetweenstats(data = AMK_data,
   title = "Mean Temperature by Year in Ang Mo Kio")
 
 ```
+## 4.3 One station across different months in one year
+### Ang Mo Kio station
+```{r}
+#To filter AMK data for the year 2021
 
-## 4.3 Across average of all stations in 2021 to 2023
+AMK_data_2021 <- AMK_data %>%    
+  filter(Date >= as.Date("2021-01-01") & Date <= as.Date("2021-12-31"))
+
+ggplot(AMK_data, 
+       aes(x = `Mean Temperature (°C)`, y = factor(Month_Name))) +
+  geom_density_ridges(fill = "lightblue",
+                      alpha = 0.7,
+                      color = "white") +
+  labs(title = "Distribution of Mean Temperature in Ang Mo Kio between 2021",
+    x = "Mean Temperature (°C)",
+    y = "Month") +
+  theme_ridges()+
+  theme(legend.position = "none")
+
+plot_ly(data = AMK_data_2021,
+             x = ~Month_Name,
+             y = ~`Mean Temperature (°C)`,
+         box = list(visible = T),
+         meanline = list(visible = T, 
+                         color = "darkblue"),
+        type = "violin",
+        spanmode = 'hard',
+        marker = list(opacity = 0.5, 
+                      color = 'lightblue',
+                      line = list(width = 0.5, 
+                                  color = 'darkblue')), 
+        scalemode = 'count',
+        color = I('lightblue'),  
+        hoveron = "points+kde",
+        line = list(width=1)) %>%
+layout(title = list(text = "Mean Temperature in Ang Mo Kio between 2021-2023"),
+       xaxis = list(title = "Month"),
+       yaxis = list(title = "Mean Temperature (°C)"))
+
+```
+
+### Confirmatory Data Analysis
+
+[**Anova test**]{.underline}
+
+Hypothesis
+
+H0 : Daily mean temperature in Ang Mo Kio across different months are equal
+
+H1 : Daily mean temperature in Ang Mo Kio across different months are not equal
+
+```{r}
+ggbetweenstats(data = AMK_data_2021,
+  x = Month_Name,
+  y = `Mean Temperature (°C)`,
+  type="np", # for non-parametric
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.annotation = FALSE,
+  pairwise.display = "none", 
+  sig.level = NA,
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Mean Temperature by Months in Ang Mo Kio")
+
+```
+
+
+## 4.4 Multiple stations across different years
+### Exploratory Data Analysis
+```{r}
+#To filter Ang Mo Kio and Changi data
+
+selected_stations = c("Seletar", "Changi")
+
+
+twostations_data <- weather %>%    
+  filter(Station%in% selected_stations)
+
+ggplot(twostations_data, aes(x = `Mean Temperature (°C)`, y = factor(Year), fill = Station)) +
+  geom_density_ridges(alpha = 0.7, color = "white") +
+  scale_fill_manual(values = c("Ang Mo Kio" = "lightblue", "Changi" = "darkblue")) +
+  labs(title = sprintf("Distribution of Mean Temperature for %s between 2021 to 2023", selected_stations),
+       x = "Mean Temperature (°C)",
+       y = "Year") +
+  theme_ridges()+ 
+  theme(legend.position = "none")
+
+# filter each year
+twostations_data_2021 <- twostations_data %>%
+  filter(Year == 2021)
+twostations_data_2022 <- twostations_data %>%
+  filter(Year == 2022)
+twostations_data_2023 <- twostations_data %>%
+  filter(Year == 2023)
+
+p1 <- plot_ly(data = twostations_data_2021,
+             x = ~Station,
+             y = ~`Mean Temperature (°C)`,
+         box = list(visible = T),
+         meanline = list(visible = T, 
+                         color = "darkblue"),
+        type = "violin",
+        spanmode = 'hard',
+        marker = list(opacity = 0.5, 
+                      color = 'lightblue',
+                      line = list(width = 0.5, 
+                                  color = 'darkblue')), 
+        scalemode = 'count',
+        color = ~Station,  
+        hoveron = "points+kde",
+        line = list(width=1)) %>%
+layout(title = list(text = "2021"),
+       xaxis = list(title = "Station"),
+       yaxis = list(title = "Mean Temperature (°C)"))
+
+p2 <- plot_ly(data = twostations_data_2022,
+             x = ~Station,
+             y = ~`Mean Temperature (°C)`,
+         box = list(visible = T),
+         meanline = list(visible = T, 
+                         color = "darkblue"),
+        type = "violin",
+        spanmode = 'hard',
+        marker = list(opacity = 0.5, 
+                      color = 'lightblue',
+                      line = list(width = 0.5, 
+                                  color = 'darkblue')), 
+        scalemode = 'count',
+        color = ~Station,  
+        hoveron = "points+kde",
+        line = list(width=1)) %>%
+layout(title = list(text = "2022"),
+       xaxis = list(title = "Station"),
+       yaxis = list(title = "Mean Temperature (°C)"))
+
+p3 <- plot_ly(data = twostations_data_2023,
+             x = ~Station,
+             y = ~`Mean Temperature (°C)`,
+         box = list(visible = T),
+         meanline = list(visible = T, 
+                         color = "darkblue"),
+        type = "violin",
+        spanmode = 'hard',
+        marker = list(opacity = 0.5, 
+                      color = 'lightblue',
+                      line = list(width = 0.5, 
+                                  color = 'darkblue')), 
+        scalemode = 'count',
+        color = ~Station,  
+        hoveron = "points+kde",
+        line = list(width=1)) %>%
+layout(title = list(text = "2023"),
+       xaxis = list(title = "Station"),
+       yaxis = list(title = "Mean Temperature (°C)"))
+
+subplot(p1, p2, p3, 
+                         nrows = 1, # One row
+                         shareX = TRUE, # Use the same x axis
+                         shareY = TRUE, # Use the same y axis
+                         titleX = TRUE, # Share x-axis title
+                         titleY = TRUE) # Share y-axis title
+
+```
+
+### Confirmatory Data Analysis
+
+[**Anova test**]{.underline}
+
+Hypothesis
+
+H0 : Daily mean temperature in Ang Mo Kio across different months are equal
+
+H1 : Daily mean temperature in Ang Mo Kio across different months are not equal
+
+```{r}
+grouped_ggbetweenstats(data = twostations_data,
+  x = Station,
+  y = `Mean Temperature (°C)`,
+  grouping.var = Year,
+  type="np", # for non-parametric
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.annotation = FALSE,
+  pairwise.display = "none", 
+  sig.level = NA,
+  p.adjust.method = "fdr",
+  messages = FALSE)
+```
+
+## 4.6 Average across all stations in 2021 to 2023
 
 ### Exploratory Data Analysis
 
@@ -266,6 +458,7 @@ ggbetweenstats(data = allstations_mean,
   messages = FALSE,
   title = "Mean Temperature across 2021-2023")
 ```
+
 
 # 5 Daily Rainfall Total (mm)
 
