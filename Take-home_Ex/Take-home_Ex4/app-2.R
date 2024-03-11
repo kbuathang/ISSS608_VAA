@@ -1,9 +1,9 @@
 ##### Set up #####
 pacman::p_load(shiny, shinydashboard, tidyverse, ggplot2, dplyr, lubridate, ggthemes, plotly, ggHoriPlot, dtwclust, factoextra)
 
-weather_data <- read_rds("data/weather_imputed_11stations.rds") 
+weather <- read_rds("data/weather_imputed_11stations.rds") 
 
-weather_data <- weather_data %>% 
+weather <- weather %>% 
   mutate(Date_mine = make_date(2023, month(Date), day(Date)),
          Month_Name = factor(months(Date), levels = month.name)
   )
@@ -46,7 +46,11 @@ EDAPlot <- fluidPage(
     box(
       title = "EDA Plot", width = 9, status = "primary", solidHeader = TRUE,
       collapsible = TRUE,
-      plotlyOutput("edaPlot") 
+      plotlyOutput("edaPlot"),
+    ),
+    box(
+      title = "Key Observation", width = 9, status = "primary", solidHeader = TRUE,
+      collapsible = TRUE
     )
   )
 )
@@ -70,6 +74,10 @@ CDAPlot <- fluidPage(
       title = "CDA Plot", width = 9, status = "primary", solidHeader = TRUE,
       collapsible = TRUE,
       plotlyOutput("cdaPlot") 
+    ),
+    box(
+      title = "Key Observation", width = 9, status = "primary", solidHeader = TRUE,
+      collapsible = TRUE
     )
   )
 )
@@ -78,7 +86,7 @@ CDAPlot <- fluidPage(
 EDACDASubTabs <- tabsetPanel(
   tabPanel("Exploratory Data Analysis",
            EDAPlot),
-  tabPanel("Confirmatory data analysis",
+  tabPanel("Confirmatory Data analysis",
            CDAPlot)
 )
 
@@ -99,7 +107,7 @@ body <- dashboardBody(
     
     # Second tab content
     tabItem(tabName = "EDACDA",
-            h2("EDACDA content"),
+            h2("Exploratory Data Analysis and Confirmatory Data analysis"),
             EDACDASubTabs
             
     ),    
@@ -131,17 +139,17 @@ server <- function(input, output, session) {
     if (input$CompareAcross == "Years") {
       list(
         checkboxGroupInput("stationSelectionForEDA", "Select Station",
-                    choices = unique(weather_data$Station),
-                    selected = unique(weather_data$Station)[1])
+                    choices = unique(weather$Station),
+                    selected = unique(weather$Station)[1])
       )
     } else if (input$CompareAcross == "Stations") {
       list(
         checkboxGroupInput("stationSelectionForEDA", "Select Stations",
-                    choices = unique(weather_data$Station),
-                    selected = unique(weather_data$Station)[1]),
+                    choices = unique(weather$Station),
+                    selected = unique(weather$Station)[1]),
         selectInput("yearSelectionForEDA", "Select Year",
-                    choices = unique(weather_data$Year), 
-                    selected = unique(weather_data$Year)[1])
+                    choices = unique(weather$Year), 
+                    selected = unique(weather$Year)[1])
       )
     }
   })
@@ -152,10 +160,10 @@ server <- function(input, output, session) {
     
     # Filter data based on user input
     if (input$CompareAcross == "Years") {
-      selected_data <- weather_data %>%
+      selected_data <- weather %>%
         filter(Station %in% input$stationSelectionForEDA)
     } else if (input$CompareAcross == "Stations"){
-      selected_data <- weather_data %>%
+      selected_data <- weather %>%
         filter(Year == input$yearSelectionForEDA,
                Station %in% input$stationSelectionForEDA)
     }
@@ -179,35 +187,34 @@ server <- function(input, output, session) {
     facet_var <- res$facet
     title <- res$title
     
-    # Plot the data using Plotly
+    # Plot the rainfall
     if (input$selectedVariable == "Daily Rainfall Total (mm)") {
-      ggplotly(
-        ggplot(data_to_plot, aes(x = Station, y = `Daily Rainfall Total (mm)`)) +
-          geom_point(aes(color = `Daily Rainfall Total (mm)`,
-                         text = paste('Year:', Year, 'Month:', Month_Name, 'Day:', day(Date),
+      ggplotly(ggplot(data_to_plot, 
+                      aes(x = Station, y = `Daily Rainfall Total (mm)`)) +
+                 geom_point(aes(color = `Daily Rainfall Total (mm)`,
+                         text = paste('Year:', Year, 
+                                      'Month:', Month_Name, 
+                                      'Day:', day(Date),
                                       'Rainfall:', `Daily Rainfall Total (mm)`)),
-                     size = 2.5) +
+                         size = 2.5) +
           labs(title = title,
                xaxis = list(title = facet_var),
                yaxis = list(title = selected_var)) +
           theme_minimal() +
           scale_color_gradient(low = "lightblue", high = "darkblue") +
-        
-          if (input$CompareAcross == "Years") {
-            facet_wrap(~Year)
-          } else {
-            NULL
-          },
-        tooltip = "text"
-      ) %>%
+            if (input$CompareAcross == "Years") {
+            facet_wrap(~Year,
+                       ncol = 1)} 
+        else {NULL},
+        tooltip = "text") %>%
         layout(hovermode = 'closest',
                xaxis = list(tickangle = 45,
                             tickfont = list(size = 12)),
-               yaxis = list(title = "Daily Rainfall Total (mm)"),
                margin = list(l = 60, r = 60, b = 80, t = 80, pad = 4)) %>%
         config(displayModeBar = FALSE)
     }else{
-    plot_ly(data = data_to_plot,
+      # Plot the temperature
+      plot_ly(data = data_to_plot,
             x = ~get(facet_var),  
             y = ~get(selected_var),
             split = ~Station,

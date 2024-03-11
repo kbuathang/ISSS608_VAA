@@ -1,5 +1,5 @@
 ---
-title: "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application"- (WIP)
+title: "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application (WIP)" 
 date: March 5,2024
 date-modified: "last-modified"
 toc: true
@@ -8,7 +8,7 @@ execute:
   echo: true
   warning: false
   message: false
-code-fold: true
+code-fold: false
 code-summary: "Show the code"
 ---
 
@@ -26,14 +26,9 @@ In this exercise, we are required to select one of the module of your proposed S
 
 # 2 Project Information
 
-In this project, we will analyze weather across different areas in Singapore and build an interactive R Shiny application. The application will consists of four sections :
+In this project, we will analyze weather across different areas in Singapore and build an interactive R Shiny application.
 
-1.  **Homepage tab**: Users have an overview of the dataset used in application. It will include a map of Singapore and interactivity elements that allow users to view the dataset at different points in time.
-2.  **EDA and CDA tab**: Users can explore the distribution and trends in the dataset for specific periods or locations (station or region), and use statistical analysis to confirm the trends.
-3.  **Time series analysis**: Users can explore the time series decomposition of the different variables, and select the type of model that they would like to use for univariate time series forecasting.
-4.  **Clustering time series analysis**: Users can explore grouping stations with similar weather patterns or grouping time periods with similar patterns. The user would then be able to choose different models to forecast the grouped data.
-
-For this exercise, we will focus on the second module.
+For this exercise, we will focus on **EDA and CDA tab** where users can explore the distribution and trends in the dataset for specific periods or locations (station or region), and use statistical analysis to confirm the trends.
 
 # 3 Data Preparation
 
@@ -46,40 +41,38 @@ pacman::p_load(tidyverse, naniar,imputeTS, DT, lubridate,ggplot2,ggstatsplot,plo
                    patchwork,ggthemes,dplyr,ggridges,gridExtra)
 ```
 
-## 3.2 Importing Original Data
+## 3.2 Importing Data
 
 We will use the weather dataset for 63 stations between 2014 to 2023 from [Meteorological Service Singapore (MSS)](http://www.weather.gov.sg/climate-historical-daily/)
-
-### Import final dataset
 
 ```{r}
 weather <- read_rds("data/weather_imputed_11stations.rds") 
 ```
 
+## 3.3 Summarizing the data
+
 ```{r}
-summary(weather)
+glimpse(weather)
+
 ```
-```{r}
-weather$unique
 
-```
+# 4 Exploratory Data Analysis
 
-# 4 Mean Temperature (°C)
+## 4.1 Mean Temperature (°C)
 
-## 4.1 Across all stations for a specific year
-
-### Exploratory Data Analysis
+### 4.1.1 Station(s) Across the specified Year
 
 ```{r}
-#| fig-width: 12
+# Users define the year
+selected_year <- "2021"
 
-#To filter data for the year 2021
-allstations_2021 <- weather %>%    
+#Filter data for the specified year
+allstations_year <- weather %>%    
   group_by(Station) %>%           
-  filter(Year == 2021)
+  filter(Year == selected_year)
 
 
-plot_ly(data = allstations_2021,
+plot_ly(data = allstations_year,
              x = ~Station,
              y = ~`Mean Temperature (°C)`,
          box = list(visible = T),
@@ -92,66 +85,25 @@ plot_ly(data = allstations_2021,
                       line = list(width = 0.5, 
                                   color = 'darkblue')), 
         scalemode = 'count',
-        color = I('lightblue'),  
+        color = ~Station,  
         hoveron = "points+kde",
         line = list(width=1)) %>%
-layout(title = list(text = "Mean Temperature across all Stations in 2021"),
+layout(title = list(text = paste("Mean Temperature across all Stations in", selected_year)),
        xaxis = list(title = "Station"),
        yaxis = list(title = "Mean Temperature (°C)"))
 
 ```
 
-### Confirmatory Data Analysis
-
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily mean temperature in 2021 across different stations are equal
-
-H1 : Daily mean temperature in 2021 across different station are not equal
+### 4.1.2 One Station Across Different Years
 
 ```{r}
-#| fig-width: 12
-#| fig-height: 5
+selected_onestation <- "Ang Mo Kio"
 
-ggbetweenstats(data = allstations_2021,
-  x = Station,
-  y = `Mean Temperature (°C)`,
-  type="np", # for non-parametric
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.annotation = FALSE,
-  pairwise.display = "none", 
-  sig.level = NA,
-  p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Mean Temperature across all Stations")
+#Filter Ang Mo Kio data
+onestation_data <- weather %>%    
+  filter(Station == selected_onestation)
 
-```
-
-## 4.2 One station across different years
-### Ang Mo Kio station
-### Exploratory Data Analysis
-```{r}
-#To filter Ang Mo Kio data
-AMK_data <- weather %>%    
-  filter(Station == "Ang Mo Kio")
-
-ggplot(AMK_data, 
-       aes(x = `Mean Temperature (°C)`, y = factor(Year))) +
-  geom_density_ridges(fill = "lightblue",
-                      alpha = 0.7,
-                      color = "white") +
-  labs(title = "Distribution of Mean Temperature in Ang Mo Kio between 2021-2023",
-    x = "Mean Temperature (°C)",
-    y = "Year") +
-  theme_ridges()+
-  theme(legend.position = "none")
-
-
-
-plot_ly(data = AMK_data,
+plot_ly(data = onestation_data,
              x = ~Year,
              y = ~`Mean Temperature (°C)`,
          box = list(visible = T),
@@ -167,131 +119,26 @@ plot_ly(data = AMK_data,
         color = I('lightblue'),  
         hoveron = "points+kde",
         line = list(width=1)) %>%
-layout(title = list(text = "Mean Temperature in Ang Mo Kio between 2021-2023"),
+layout(title = list(text = "Mean Temperature in Station(s) across the years 2021 to 2023"),
        xaxis = list(title = "Year"),
        yaxis = list(title = "Mean Temperature (°C)"))
 
 ```
 
-### Confirmatory Data Analysis
-
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily mean temperature in Ang Mo Kio across different years are equal
-
-H1 : Daily mean temperature in Ang Mo Kio across different years are not equal
+### 4.1.3 Multiple Station Across Different Years
 
 ```{r}
-ggbetweenstats(data = AMK_data,
-  x = Year,
-  y = `Mean Temperature (°C)`,
-  type="np", # for non-parametric
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.annotation = FALSE,
-  pairwise.display = "none", 
-  sig.level = NA,
-  p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Mean Temperature by Year in Ang Mo Kio")
+selected_twostations <- c("Seletar", "Changi")
 
-```
-## 4.3 One station across different months in one year
-### Ang Mo Kio station
-```{r}
-#To filter AMK data for the year 2021
-
-AMK_data_2021 <- AMK_data %>%    
-  filter(Date >= as.Date("2021-01-01") & Date <= as.Date("2021-12-31"))
-
-ggplot(AMK_data, 
-       aes(x = `Mean Temperature (°C)`, y = factor(Month_Name))) +
-  geom_density_ridges(fill = "lightblue",
-                      alpha = 0.7,
-                      color = "white") +
-  labs(title = "Distribution of Mean Temperature in Ang Mo Kio between 2021",
-    x = "Mean Temperature (°C)",
-    y = "Month") +
-  theme_ridges()+
-  theme(legend.position = "none")
-
-plot_ly(data = AMK_data_2021,
-             x = ~Month_Name,
-             y = ~`Mean Temperature (°C)`,
-         box = list(visible = T),
-         meanline = list(visible = T, 
-                         color = "darkblue"),
-        type = "violin",
-        spanmode = 'hard',
-        marker = list(opacity = 0.5, 
-                      color = 'lightblue',
-                      line = list(width = 0.5, 
-                                  color = 'darkblue')), 
-        scalemode = 'count',
-        color = I('lightblue'),  
-        hoveron = "points+kde",
-        line = list(width=1)) %>%
-layout(title = list(text = "Mean Temperature in Ang Mo Kio between 2021-2023"),
-       xaxis = list(title = "Month"),
-       yaxis = list(title = "Mean Temperature (°C)"))
-
-```
-
-### Confirmatory Data Analysis
-
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily mean temperature in Ang Mo Kio across different months are equal
-
-H1 : Daily mean temperature in Ang Mo Kio across different months are not equal
-
-```{r}
-ggbetweenstats(data = AMK_data_2021,
-  x = Month_Name,
-  y = `Mean Temperature (°C)`,
-  type="np", # for non-parametric
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.annotation = FALSE,
-  pairwise.display = "none", 
-  sig.level = NA,
-  p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Mean Temperature by Months in Ang Mo Kio")
-
-```
-
-
-## 4.4 Multiple stations across different years
-### Exploratory Data Analysis
-```{r}
-#To filter Ang Mo Kio and Changi data
-
-selected_stations = c("Seletar", "Changi")
-
-
-twostations_data <- weather %>%    
-  filter(Station%in% selected_stations)
-
-ggplot(twostations_data, aes(x = `Mean Temperature (°C)`, y = factor(Year), fill = Station)) +
-  geom_density_ridges(alpha = 0.7, color = "white") +
-  scale_fill_manual(values = c("Ang Mo Kio" = "lightblue", "Changi" = "darkblue")) +
-  labs(title = sprintf("Distribution of Mean Temperature for %s between 2021 to 2023", selected_stations),
-       x = "Mean Temperature (°C)",
-       y = "Year") +
-  theme_ridges()+ 
-  theme(legend.position = "none")
+selected_twostations <- weather %>%    
+  filter(Station == selected_twostations)
 
 # filter each year
-twostations_data_2021 <- twostations_data %>%
+twostations_data_2021 <- selected_twostations %>%
   filter(Year == 2021)
-twostations_data_2022 <- twostations_data %>%
+twostations_data_2022 <- selected_twostations %>%
   filter(Year == 2022)
-twostations_data_2023 <- twostations_data %>%
+twostations_data_2023 <- selected_twostations %>%
   filter(Year == 2023)
 
 p1 <- plot_ly(data = twostations_data_2021,
@@ -310,9 +157,10 @@ p1 <- plot_ly(data = twostations_data_2021,
         color = ~Station,  
         hoveron = "points+kde",
         line = list(width=1)) %>%
-layout(title = list(text = "2021"),
-       xaxis = list(title = "Station"),
-       yaxis = list(title = "Mean Temperature (°C)"))
+  layout(title = list(text = "2021"),
+         xaxis = list(title = "2021"),
+         yaxis = list(title = "Mean Temperature (°C)"),
+         showlegend = TRUE) 
 
 p2 <- plot_ly(data = twostations_data_2022,
              x = ~Station,
@@ -330,9 +178,9 @@ p2 <- plot_ly(data = twostations_data_2022,
         color = ~Station,  
         hoveron = "points+kde",
         line = list(width=1)) %>%
-layout(title = list(text = "2022"),
-       xaxis = list(title = "Station"),
-       yaxis = list(title = "Mean Temperature (°C)"))
+  layout(xaxis = list(title = "2022"),
+         yaxis = list(title = "Mean Temperature (°C)"),
+         showlegend = FALSE)
 
 p3 <- plot_ly(data = twostations_data_2023,
              x = ~Station,
@@ -350,129 +198,38 @@ p3 <- plot_ly(data = twostations_data_2023,
         color = ~Station,  
         hoveron = "points+kde",
         line = list(width=1)) %>%
-layout(title = list(text = "2023"),
-       xaxis = list(title = "Station"),
-       yaxis = list(title = "Mean Temperature (°C)"))
+  layout(xaxis = list(title = "2023"),
+         yaxis = list(title = "Mean Temperature (°C)"),
+         showlegend = FALSE)
 
 subplot(p1, p2, p3, 
-                         nrows = 1, # One row
-                         shareX = TRUE, # Use the same x axis
-                         shareY = TRUE, # Use the same y axis
-                         titleX = TRUE, # Share x-axis title
-                         titleY = TRUE) # Share y-axis title
+        nrows = 1, 
+        shareX = TRUE, 
+        shareY = TRUE) %>%
+  layout(title = "Mean Temperature in Station(s) across the years 2021 to 2023")
 
 ```
 
-### Confirmatory Data Analysis
+## 4.2 Daily Rainfall Total (mm)
 
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily mean temperature in Ang Mo Kio across different months are equal
-
-H1 : Daily mean temperature in Ang Mo Kio across different months are not equal
+### 4.2.1 Station(s) Across the specified Year
 
 ```{r}
-grouped_ggbetweenstats(data = twostations_data,
-  x = Station,
-  y = `Mean Temperature (°C)`,
-  grouping.var = Year,
-  type="np", # for non-parametric
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.annotation = FALSE,
-  pairwise.display = "none", 
-  sig.level = NA,
-  p.adjust.method = "fdr",
-  messages = FALSE)
-```
+# User define the year
+selected_year <- "2021"
 
-## 4.6 Average across all stations in 2021 to 2023
+#Filter data for the specified year
+allstations_year <- weather %>%    
+  group_by(Station) %>%           
+  filter(Year == selected_year)
 
-### Exploratory Data Analysis
-
-```{r}
-#To average mean temperature across all stations
-allstations_mean <- weather %>%
-  group_by(Date) %>%
-  summarise(`Mean Temperature (°C)` = mean(`Mean Temperature (°C)`)) %>%
-  mutate(Year = year(Date),
-         Month = month(Date, label = TRUE),
-         Day = day(Date))
-
-ggplot(allstations_mean, 
-       aes(x = `Mean Temperature (°C)`, y = factor(Year))) +
-  geom_density_ridges(fill = "orange",
-                      alpha = 0.7,
-                      color = "white") +
-  labs(title = "Distribution of Mean Temperature between 2021-2023",
-    x = "Mean Temperature (°C)",
-    y = "Year") +
-  theme_ridges()+
-  theme(legend.position = "none")
-
-plot_ly(data = allstations_mean,
-             x = ~Year,
-             y = ~`Mean Temperature (°C)`,
-         box = list(visible = T),
-         meanline = list(visible = T, 
-                         color = "red"),
-        type = "violin",
-        spanmode = 'hard',
-        marker = list(opacity = 0.5, 
-                      color = 'orange',
-                      line = list(width = 0.5, 
-                                  color = 'red')), 
-        scalemode = 'count',
-        color = I('orange'),  
-        hoveron = "points+kde",
-        line = list(width=1)) %>%
-layout(title = list(text = "Mean Temperature between 2021-2023"),
-       xaxis = list(title = "Year"),
-       yaxis = list(title = "Mean Temperature (°C)"))
-
-```
-
-### Confirmatory Data Analysis
-
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily mean temperature across different years are equal
-
-H1 : Daily mean temperature across different years are not equal
-
-```{r}
-ggbetweenstats(data = allstations_mean,
-  x = Year,
-  y = `Mean Temperature (°C)`,
-  type="np", # for non-parametric
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.annotation = FALSE,
-  pairwise.display = "none", 
-  sig.level = NA,
-  p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Mean Temperature across 2021-2023")
-```
-
-
-# 5 Daily Rainfall Total (mm)
-
-## 5.1 Across different stations for a specific year
-
-### Exploratory Data Analysis
-
-```{r}
-p1 <- ggplot(allstations_2021, aes(x = Station, y = `Daily Rainfall Total (mm)`)) +
+p1 <- ggplot(allstations_year, 
+             aes(x = Station, y = `Daily Rainfall Total (mm)`)) +
   geom_point(aes(color = `Daily Rainfall Total (mm)`,
                  text = paste('Year:', Year,'Month:',Month,'Day:', Day,
                               'Rainfall:',`Daily Rainfall Total (mm)`)),
              size=2.5) +
-  labs(title = "Daily Rainfall by Station in 2021",
+  labs(title = paste("Daily Rainfall across all Stations in", selected_year),
        x = "Station",
        y = "Daily Rainfall Total (mm)") +
   theme_minimal() +
@@ -487,20 +244,163 @@ ggplotly(p1, tooltip = "text") %>%
 
 ```
 
-### Confirmatory Data Analysis
+### 4.2.2 One Station Across Different Years
+
+```{r}
+selected_onestation <- "Ang Mo Kio"
+
+#Filter Ang Mo Kio data
+onestation_data <- weather %>%    
+  filter(Station == selected_onestation)
+
+p1 <- ggplot(onestation_data,
+             aes(x = Year, y = `Daily Rainfall Total (mm)`)) +
+  geom_point(aes(color = `Daily Rainfall Total (mm)`,
+                 text = paste('Year:', Year,'Month:',Month,'Day:', Day,
+                              'Rainfall:',`Daily Rainfall Total (mm)`)),
+             size=2.5) +
+  labs(title = "Daily Rainfall in Station(s) across the years 2021 to 2023",
+       x = "Year",
+       y = "Daily Rainfall Total (mm)") +
+  theme_minimal() +
+  scale_color_gradient(low = "lightblue", high = "darkblue")+
+  scale_x_continuous(breaks = seq(2021, 2023, by = 1)) 
+
+ggplotly(p1, tooltip = "text") %>%
+  layout(hovermode = 'closest') %>%
+  config(displayModeBar = FALSE)
+```
+
+### 4.1.3 Multiple Station Across Different Years
+
+```{r}
+p <- ggplot(selected_twostations, 
+            aes(x = Station, y = `Daily Rainfall Total (mm)`, 
+                color = `Daily Rainfall Total (mm)`)) +
+  geom_point(aes(text = paste('Year:', Year,'Month:',Month,'Day:', Day,
+                              'Rainfall:', `Daily Rainfall Total (mm)`)), size = 2.5) +
+  facet_wrap(~Year, ncol = 1) +
+  labs(title = "Daily Rainfall in Station(s) across the years 2021 to 2023",
+       x = "Station",
+       y = "Daily Rainfall Total (mm)") +
+  theme_minimal() +
+  scale_color_gradient(low = "lightblue", high = "darkblue")
+
+
+ggplotly(p, tooltip = "text") %>%
+  layout(hovermode = 'closest') %>%
+  config(displayModeBar = FALSE)
+
+```
+
+## 4.3 UI Design
+
+![](images/clipboard-1967767980.png)
+
+![](images/clipboard-599838417.png)
+
+![](images/clipboard-665354853.png)
+
+# 5 Confirmatory Data Analysis
+
+## 5.1 Mean Temperature (°C)
+
+### 5.1.1 Compare Station(s) Across the specified Year
 
 [**Anova test**]{.underline}
 
 Hypothesis
 
-H0 : Daily rainfall in 2021 across different stations are equal
+H0 : Daily mean temperature in 2021 across different stations are equal
 
-H1 : Daily rainfall in 2021 across different station are not equal
+H1 : Daily mean temperature in 2021 across different station are not equal
 
 ```{r}
 #| fig-width: 12
 #| fig-height: 5
-ggbetweenstats(data = allstations_2021,
+
+# User define the year
+selected_year <- "2021"
+
+#Filter data for the specified year
+allstations_year <- weather %>%    
+  group_by(Station) %>%           
+  filter(Year == selected_year)
+
+ggbetweenstats(data = allstations_year,
+  x = Station,
+  y = `Mean Temperature (°C)`,
+  type="np", # for non-parametric
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.annotation = FALSE,
+  pairwise.display = "none", 
+  sig.level = NA,
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = paste("Mean Temperature across all Stations in", selected_year))
+
+```
+
+### 5.1.2 One Station Across Different Years
+
+[**Anova test**]{.underline}
+
+Hypothesis
+
+H0 : Daily mean temperature in Ang Mo Kio across different years are equal
+
+H1 : Daily mean temperature in Ang Mo Kio across different years are not equal
+
+```{r}
+selected_onestation <- "Ang Mo Kio"
+
+#Filter Ang Mo Kio data
+onestation_data <- weather %>%    
+  filter(Station == selected_onestation)
+
+ggbetweenstats(data = onestation_data,
+  x = Year,
+  y = `Mean Temperature (°C)`,
+  type="np", # for non-parametric
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.annotation = FALSE,
+  pairwise.display = "none", 
+  sig.level = NA,
+  p.adjust.method = "fdr",
+  messages = FALSE,
+  title = "Mean Temperature in Station(s) across the years 2021 to 2023")
+
+```
+
+### 5.1.3 Multiple Station Across Different Years
+
+## 5.2 Daily Rainfall Total (mm)
+
+## 5.2.1 Across different stations for a specific year
+
+[**Anova test**]{.underline}
+
+Hypothesis
+
+H0 : Daily Rainfall in 2021 across different stations are equal
+
+H1 : Daily Rainfall in 2021 across different station are not equal
+
+```{r}
+#| fig-width: 12
+#| fig-height: 5
+
+# User define the year
+selected_year <- "2021"
+
+#Filter data for the specified year
+allstations_year <- weather %>%    
+  group_by(Station) %>%           
+  filter(Year == selected_year)
+
+ggbetweenstats(data = allstations_year,
   x = Station,
   y = `Daily Rainfall Total (mm)`,
   type="np", # for non-parametric
@@ -511,60 +411,28 @@ ggbetweenstats(data = allstations_2021,
   sig.level = NA,
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Rainfall by Station in 2021")
+  title = paste("Daily Rainfall across all Stations in", selected_year))
 
 ```
 
-## 5.2 Specific station across different years
-
-### Exploratory Data Analysis
-
-```{r}
-#To filter Ang Mo Kio data
-AMK_data <- weather %>%    
-  filter(Station == "Ang Mo Kio")
-
-ggplot(AMK_data, 
-       aes(x = `Daily Rainfall Total (mm)`, y = factor(Year))) +
-  geom_density_ridges(fill = "lightblue",
-                      alpha = 0.7,
-                      color = "white") +
-  labs(title = "Distribution of Daily rainfall in Ang Mo Kio between 2021-2023",
-    x = "Daily Rainfall (mm)",
-    y = "Year") +
-  theme_ridges()+
-  theme(legend.position = "none")
-
-p1 <- ggplot(AMK_data, aes(x = Year, y = `Daily Rainfall Total (mm)`)) +
-  geom_point(aes(color = `Daily Rainfall Total (mm)`,
-                 text = paste('Year:', Year,'Day:', Day,
-                              'Rainfall:',`Daily Rainfall Total (mm)`)),
-             size=2.5) +
-  labs(title = "Daily Rainfall by Year in Ang Mo Kio",
-       x = "Station",
-       y = "Daily Rainfall Total (mm)") +
-  theme_minimal() +
-  scale_color_gradient(low = "lightblue", high = "darkblue")+
-  scale_x_continuous(breaks = seq(2021, 2023, by = 1)) 
-
-ggplotly(p1, tooltip = "text") %>%
-  layout(hovermode = 'closest') %>%
-  config(displayModeBar = FALSE)
-
-```
-
-### Confirmatory Data Analysis
+## 5.2.2 Specific station across different years
 
 [**Anova test**]{.underline}
 
 Hypothesis
 
-H0 : Daily rainfall in Ang Mo Kio across different years are equal
+H0 : Daily Rainfall in Ang Mo Kio across different years are equal
 
-H1 : Daily rainfall in Ang Mo Kio across different years are not equal
+H1 : Daily Rainfall in Ang Mo Kio across different years are not equal
 
 ```{r}
-ggbetweenstats(data = AMK_data,
+selected_onestation <- "Ang Mo Kio"
+
+#Filter Ang Mo Kio data
+onestation_data <- weather %>%    
+  filter(Station == selected_onestation)
+
+ggbetweenstats(data = onestation_data,
   x = Year,
   y = `Daily Rainfall Total (mm)`,
   type="np", # for non-parametric
@@ -575,126 +443,10 @@ ggbetweenstats(data = AMK_data,
   sig.level = NA,
   p.adjust.method = "fdr",
   messages = FALSE,
-  title = "Rainfall by Year in Ang Mo Kio")
+  title = "Daily Rainfall in Station(s) across the years 2021 to 2023")
 
 ```
 
-## 5.3 Across average of all stations in 2021 to 2023
+### 5.2.3 Multiple Station Across Different Years
 
-### Exploratory Data Analysis
-
-```{r}
-#To average rainfall across all stations
-allstations_rainfall_mean <- weather %>%
-  group_by(Date) %>%
-  summarise(`Daily Rainfall Total (mm)` = mean(`Daily Rainfall Total (mm)`)) %>%
-  mutate(Year = year(Date),
-         Month = month(Date, label = TRUE),
-         Day = day(Date))
-
-ggplot(allstations_rainfall_mean, 
-       aes(x = `Daily Rainfall Total (mm)`, y = factor(Year))) +
-  geom_density_ridges(fill = "lightblue",
-                      alpha = 0.7,
-                      color = "white") +
-  labs(title = "Distribution of Rainfall between 2021-2023",
-    x = "Daily Rainfall Total (mm)",
-    y = "Year") +
-  theme_ridges()+
-  theme(legend.position = "none")
-
-p1 <- ggplot(allstations_rainfall_mean, aes(x = Year, y = `Daily Rainfall Total (mm)`)) +
-  geom_point(aes(color = `Daily Rainfall Total (mm)`,
-                 text = paste('Year:', Year,'Day:', Day,
-                              'Rainfall:',`Daily Rainfall Total (mm)`)),
-             size=2.5) +
-  labs(title = "Daily Rainfall by Year in Ang Mo Kio",
-       x = "Station",
-       y = "Daily Rainfall Total (mm)") +
-  theme_minimal() +
-  scale_color_gradient(low = "lightblue", high = "darkblue")+
-  scale_x_continuous(breaks = seq(2021, 2023, by = 1)) 
-
-ggplotly(p1, tooltip = "text") %>%
-  layout(hovermode = 'closest') %>%
-  config(displayModeBar = FALSE)
-
-```
-
-### Confirmatory Data Analysis
-
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily rainfall across different years are equal
-
-H1 : Daily rainfall across different years are not equal
-
-```{r}
-ggbetweenstats(data = allstations_rainfall_mean,
-  x = Year,
-  y = `Daily Rainfall Total (mm)`,
-  type="np", # for non-parametric
-  mean.ci = TRUE, 
-  pairwise.comparisons = TRUE, 
-  pairwise.annotation = FALSE,
-  pairwise.display = "none", 
-  sig.level = NA,
-  p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Rainfall across different years")
-
-```
-
-#categories variables
-
-## by stations
-
-```{r}
-quantiles <- quantile(allstations_2021$`Daily Rainfall Total (mm)`, 
-                      probs = c(0, 0.25, 0.5, 0.75, 1), 
-                      na.rm = TRUE)
-
-allstations_2021$RainfallCategory <- cut(allstations_2021$`Daily Rainfall Total (mm)`,
-                                         breaks = c(-Inf, quantiles[2], quantiles[3], quantiles[4], Inf),
-                                         labels = c("No Rain", "Low", "Moderate", "High"),
-                                         include.lowest = TRUE)
-
-```
-
-```{r}
-ggbarstats(allstations_2021, 
-           x = RainfallCategory, 
-           y = Station)
-```
-
-## by years
-
-```{r}
-quantiles <- quantile(allstations_rainfall_mean$`Daily Rainfall Total (mm)`, 
-                      probs = c(0, 0.25, 0.5, 0.75, 1), 
-                      na.rm = TRUE)
-
-allstations_rainfall_mean$RainfallCategory <- cut(allstations_rainfall_mean$`Daily Rainfall Total (mm)`,
-                                         breaks = c(-Inf, quantiles[2], quantiles[3], quantiles[4], Inf),
-                                         labels = c("No Rain", "Low", "Moderate", "High"),
-                                         include.lowest = TRUE)
-
-```
-
-```{r}
-ggbarstats(allstations_rainfall_mean, 
-           x = RainfallCategory, 
-           y = Year)
-```
-
-# correlation
-
-```{r}
-ggscatterstats(data = allstations_2021,
-  x = `Daily Rainfall Total (mm)`,
-  y = `Mean Temperature (°C)`,
-  marginal = FALSE)
-
-```
+## 5.3 UI Design
