@@ -28,7 +28,7 @@ In this exercise, we are required to select one of the module of your proposed S
 
 In this project, we will analyze weather across different areas in Singapore and build an interactive R Shiny application.
 
-For this exercise, we will focus on **EDA and CDA tab** where users can explore the distribution and trends in the dataset for specific periods or locations (station or region), and use statistical analysis to confirm the trends.
+For this exercise, we will focus on **EDA and CDA tab** where users can explore the distribution and trends in the dataset for specific periods or stations, and use statistical analysis to confirm the trends.
 
 # 3 Data Preparation
 
@@ -43,7 +43,7 @@ pacman::p_load(tidyverse, naniar,imputeTS, DT, lubridate,ggplot2,ggstatsplot,plo
 
 ## 3.2 Importing Data
 
-We will use the weather dataset for 63 stations between 2014 to 2023 from [Meteorological Service Singapore (MSS)](http://www.weather.gov.sg/climate-historical-daily/)
+We will use the weather dataset for 63 stations between 2014 to 2023 from [Meteorological Service Singapore (MSS)](http://www.weather.gov.sg/climate-historical-daily/). After the data preparation, we left with 11 stations. The process of data preparation is explained in via this link.
 
 ```{r}
 weather <- read_rds("data/weather_imputed_11stations.rds") 
@@ -58,9 +58,21 @@ glimpse(weather)
 
 # 4 Exploratory Data Analysis
 
-## 4.1 Mean Temperature (°C)
+In the dataset, there are 4 variables for users to choose to explore.
 
-### 4.1.1 Station(s) Across the specified Year
+-   `Daily Rainfall Total (mm)`
+
+-   `Mean Temperature (°C)`
+
+-   `Minimum Temperature (°C)`
+
+-   `Maximum Temperature (°C)`
+
+For this section, we will use violin plots and box plots to visualize the trend of temperature variables over specified periods or at particular stations. However, for rainfall data, dot plots will be used to enhance the better visualization.
+
+Other exploratory plots may include in the future work.
+
+## 4.1 Compare Mean Temperature (°C) for Station(s) Across the specified Year
 
 ```{r}
 # Users define the year
@@ -94,7 +106,7 @@ layout(title = list(text = paste("Mean Temperature across all Stations in", sele
 
 ```
 
-### 4.1.2 One Station Across Different Years
+## 4.2 Compare Mean Temperature (°C) for One Station Across Different Years
 
 ```{r}
 selected_onestation <- "Ang Mo Kio"
@@ -125,20 +137,20 @@ layout(title = list(text = "Mean Temperature in Station(s) across the years 2021
 
 ```
 
-### 4.1.3 Multiple Station Across Different Years
+## 4.3 Compare Mean Temperature (°C) for Multiple Stations Across Different Years
 
 ```{r}
 selected_twostations <- c("Seletar", "Changi")
 
-selected_twostations <- weather %>%    
+twostations_data <- weather %>%    
   filter(Station == selected_twostations)
 
 # filter each year
-twostations_data_2021 <- selected_twostations %>%
+twostations_data_2021 <- twostations_data %>%
   filter(Year == 2021)
-twostations_data_2022 <- selected_twostations %>%
+twostations_data_2022 <- twostations_data %>%
   filter(Year == 2022)
-twostations_data_2023 <- selected_twostations %>%
+twostations_data_2023 <- twostations_data %>%
   filter(Year == 2023)
 
 p1 <- plot_ly(data = twostations_data_2021,
@@ -210,9 +222,7 @@ subplot(p1, p2, p3,
 
 ```
 
-## 4.2 Daily Rainfall Total (mm)
-
-### 4.2.1 Station(s) Across the specified Year
+## 4.4 Compare Daily Rainfall Total (mm) for Station(s) Across the specified Year
 
 ```{r}
 # User define the year
@@ -244,7 +254,7 @@ ggplotly(p1, tooltip = "text") %>%
 
 ```
 
-### 4.2.2 One Station Across Different Years
+## 4.5 Compare Daily Rainfall Total (mm) for One Station Across Different Years
 
 ```{r}
 selected_onestation <- "Ang Mo Kio"
@@ -271,10 +281,16 @@ ggplotly(p1, tooltip = "text") %>%
   config(displayModeBar = FALSE)
 ```
 
-### 4.1.3 Multiple Station Across Different Years
+## 4.6 Compare Daily Rainfall Total (mm) for Multiple Stations Across Different Years
 
 ```{r}
-p <- ggplot(selected_twostations, 
+#| fig-height: 10
+selected_twostations <- c("Seletar", "Changi")
+
+twostations_data <- weather %>%    
+  filter(Station == selected_twostations)
+
+p <- ggplot(twostations_data, 
             aes(x = Station, y = `Daily Rainfall Total (mm)`, 
                 color = `Daily Rainfall Total (mm)`)) +
   geom_point(aes(text = paste('Year:', Year,'Month:',Month,'Day:', Day,
@@ -293,34 +309,33 @@ ggplotly(p, tooltip = "text") %>%
 
 ```
 
-## 4.3 UI Design
-
-![](images/clipboard-1967767980.png)
-
-![](images/clipboard-599838417.png)
-
-![](images/clipboard-665354853.png)
-
 # 5 Confirmatory Data Analysis
 
-## 5.1 Mean Temperature (°C)
+For this section, we will conduct statistical analysis by using **Kruskal-Wallis one-way ANOVA test** to confirm the trends of variables for specified periods or stations. In the dataset, there are 4 variables for users to choose to explore.
 
-### 5.1.1 Compare Station(s) Across the specified Year
+-   `Daily Rainfall Total (mm)`
 
-[**Anova test**]{.underline}
+-   `Mean Temperature (°C)`
 
-Hypothesis
+-   `Minimum Temperature (°C)`
 
-H0 : Daily mean temperature in 2021 across different stations are equal
+-   `Maximum Temperature (°C)`
 
-H1 : Daily mean temperature in 2021 across different station are not equal
+## 5.1 Compare Mean Temperature (°C) for Station(s) Across the specified Year
+
+**Hypothesis**
+
+*H0 : Daily mean temperature in 2021 across different stations are equal*
+
+*H1 : Daily mean temperature in 2021 across different station are not equal*
 
 ```{r}
 #| fig-width: 12
 #| fig-height: 5
 
-# User define the year
+# User define the parameter
 selected_year <- "2021"
+selected_StatApproach <- "nonparametric"
 
 #Filter data for the specified year
 allstations_year <- weather %>%    
@@ -330,30 +345,28 @@ allstations_year <- weather %>%
 ggbetweenstats(data = allstations_year,
   x = Station,
   y = `Mean Temperature (°C)`,
-  type="np", # for non-parametric
+  type = selected_StatApproach,
   mean.ci = TRUE, 
   pairwise.comparisons = TRUE, 
   pairwise.annotation = FALSE,
   pairwise.display = "none", 
   sig.level = NA,
   p.adjust.method = "fdr",
-  messages = FALSE,
-  title = paste("Mean Temperature across all Stations in", selected_year))
+  messages = FALSE)
 
 ```
 
-### 5.1.2 One Station Across Different Years
+## 5.2 Compare Mean Temperature (°C) for One Station Across Different Years
 
-[**Anova test**]{.underline}
+**Hypothesis**
 
-Hypothesis
+*H0 : Daily mean temperature in Ang Mo Kio across different years are equal*
 
-H0 : Daily mean temperature in Ang Mo Kio across different years are equal
-
-H1 : Daily mean temperature in Ang Mo Kio across different years are not equal
+*H1 : Daily mean temperature in Ang Mo Kio across different years are not equal*
 
 ```{r}
 selected_onestation <- "Ang Mo Kio"
+selected_StatApproach <- "nonparametric"
 
 #Filter Ang Mo Kio data
 onestation_data <- weather %>%    
@@ -362,38 +375,66 @@ onestation_data <- weather %>%
 ggbetweenstats(data = onestation_data,
   x = Year,
   y = `Mean Temperature (°C)`,
-  type="np", # for non-parametric
+  type= selected_StatApproach, # for non-parametric
   mean.ci = TRUE, 
   pairwise.comparisons = TRUE, 
   pairwise.annotation = FALSE,
   pairwise.display = "none", 
   sig.level = NA,
   p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Mean Temperature in Station(s) across the years 2021 to 2023")
+  messages = FALSE)
 
 ```
 
-### 5.1.3 Multiple Station Across Different Years
+## 5.3 Compare Mean Temperature (°C) for Multiple Stations Across Different Years
 
-## 5.2 Daily Rainfall Total (mm)
+**Hypothesis**
 
-## 5.2.1 Across different stations for a specific year
+*H0 : Daily mean temperature in Seletar and Changi across different years are equal*
 
-[**Anova test**]{.underline}
-
-Hypothesis
-
-H0 : Daily Rainfall in 2021 across different stations are equal
-
-H1 : Daily Rainfall in 2021 across different station are not equal
+*H1 : Daily mean temperature in Seletar and Changi across different years are not equal*
 
 ```{r}
 #| fig-width: 12
 #| fig-height: 5
 
-# User define the year
+# User define parameters
+selected_twostations <- c("Seletar", "Changi")
+selected_StatApproach <- "nonparametric"
+
+twostations_data <- weather %>%    
+  filter(Station == selected_twostations)
+
+grouped_ggbetweenstats(data = twostations_data,
+  x = Station,
+  y = `Mean Temperature (°C)`,
+  grouping.var = Year,
+  type= selected_StatApproach, # for non-parametric
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.annotation = FALSE,
+  pairwise.display = "none", 
+  sig.level = NA,
+  p.adjust.method = "fdr",
+  messages = FALSE)
+
+```
+
+## 5.4 Compare Daily Rainfall Total (mm) for Station(s) Across the specified Year
+
+**Hypothesis**
+
+*H0 : Daily Rainfall Total in 2021 across different stations are equal*
+
+*H1 : Daily Rainfall Total in 2021 across different station are not equal*
+
+```{r}
+#| fig-width: 12
+#| fig-height: 5
+
+# User define the parameter
 selected_year <- "2021"
+selected_StatApproach <- "nonparametric"
 
 #Filter data for the specified year
 allstations_year <- weather %>%    
@@ -403,30 +444,28 @@ allstations_year <- weather %>%
 ggbetweenstats(data = allstations_year,
   x = Station,
   y = `Daily Rainfall Total (mm)`,
-  type="np", # for non-parametric
+  type = selected_StatApproach,
   mean.ci = TRUE, 
   pairwise.comparisons = TRUE, 
   pairwise.annotation = FALSE,
   pairwise.display = "none", 
   sig.level = NA,
   p.adjust.method = "fdr",
-  messages = FALSE,
-  title = paste("Daily Rainfall across all Stations in", selected_year))
+  messages = FALSE)
 
 ```
 
-## 5.2.2 Specific station across different years
+## 5.5 Compare Daily Rainfall Total (mm) for One Station Across Different Years
 
-[**Anova test**]{.underline}
+**Hypothesis**
 
-Hypothesis
+*H0 : Daily Rainfall Total in Ang Mo Kio across different years are equal*
 
-H0 : Daily Rainfall in Ang Mo Kio across different years are equal
-
-H1 : Daily Rainfall in Ang Mo Kio across different years are not equal
+*H1 : Daily Rainfall Total in Ang Mo Kio across different years are not equal*
 
 ```{r}
 selected_onestation <- "Ang Mo Kio"
+selected_StatApproach <- "nonparametric"
 
 #Filter Ang Mo Kio data
 onestation_data <- weather %>%    
@@ -435,18 +474,112 @@ onestation_data <- weather %>%
 ggbetweenstats(data = onestation_data,
   x = Year,
   y = `Daily Rainfall Total (mm)`,
-  type="np", # for non-parametric
+  type= selected_StatApproach, # for non-parametric
   mean.ci = TRUE, 
   pairwise.comparisons = TRUE, 
   pairwise.annotation = FALSE,
   pairwise.display = "none", 
   sig.level = NA,
   p.adjust.method = "fdr",
-  messages = FALSE,
-  title = "Daily Rainfall in Station(s) across the years 2021 to 2023")
+  messages = FALSE)
 
 ```
 
-### 5.2.3 Multiple Station Across Different Years
+## 5.6 Compare Daily Rainfall Total (mm) for for Multiple Stations Across Different Years
 
-## 5.3 UI Design
+**Hypothesis**
+
+*H0 : Daily Rainfall Total in Seletar and Changi across different years are equal*
+
+*H1 : Daily Rainfall Total in Seletar and Changi across different years are not equal*
+
+```{r}
+#| fig-width: 12
+#| fig-height: 5
+
+# User define parameters
+selected_twostations <- c("Seletar", "Changi")
+selected_StatApproach <- "nonparametric"
+
+twostations_data <- weather %>%    
+  filter(Station == selected_twostations)
+
+grouped_ggbetweenstats(data = twostations_data,
+  x = Station,
+  y = `Daily Rainfall Total (mm)`,
+  grouping.var = Year,
+  type= selected_StatApproach, # for non-parametric
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.annotation = FALSE,
+  pairwise.display = "none", 
+  sig.level = NA,
+  p.adjust.method = "fdr",
+  messages = FALSE)
+
+```
+
+# 6 UI Design
+
+The EDA and CDA tab will consist of two sub-tabs:
+
+1.  Exploratory Data Analysis
+
+2.  Confirmatory Data Analysis
+
+## 6.1 Exploratory Data Analysis
+
+The main objective of exploratory data analysis section is to allow users with the tools to delve into and identify trends within different weather variables across selected year and stations. This interactive experience aims to enhance users' understanding of weather variable patterns and to facilitate the discovery of key insights through visualization. However, for rainfall variable, we will implement dot plots for the better visual
+
+![](images/clipboard-2857876835.png)
+
+::: callout-tip
+## Interactive features
+
+1.  **Choose variable** : Users can choose a weather variable such as Daily Rainfall Total (mm), Mean Temperature (°C), etc.
+2.  **Compare across** : Users are allowed to compare across different stations or between years.
+3.  **Select Stations** : Users can select one or multiple stations for comparison.
+4.  **Select Year** : Users can choose the year for which the data should be visualized.
+5.  **EDA Plot** : When stations are selected under compare across, the plot will display the variation within those stations for the specified year. If years is chosen, the plot will display the trend of selected stations across the years 2021 to 2023.
+:::
+
+### 6.1.1 Test case: Compare Mean Temperature (°C) for One Stations Across Different Years
+
+![](images/clipboard-2207405565.png)
+
+### 6.1.2 Test case: Compare Mean Temperature (°C) for Multiple Stations Across Different Years
+
+![](images/clipboard-1300324140.png)
+
+### 6.1.3 Test case: Compare Daily Rainfall Total (mm) for Station(s) Across the specified Year
+
+![](images/clipboard-2405516460.png)
+
+## 6.2 Confirmatory Data Analysis
+
+The main objective of Confirmatory Data Analysis section is to provide users with a reliable method to ensure the patterns observed in weather variables are true. This section builds on the preliminary findings by offering a statistical approach to validate these patterns across selected years or stations.
+
+![](images/clipboard-1198253127.png)
+
+::: callout-tip
+## Interactive features
+
+1.  **Choose variable** : Users can choose a weather variable such as Daily Rainfall Total (mm), Mean Temperature (°C), etc.
+2.  **Compare across** : Users are allowed to compare across different stations or between years.
+3.  **Statistical Approach**: Users can specify the type of statistical approach they want to use.
+4.  **Select Stations** : Users can select one or multiple stations for comparison.
+5.  **Select Year** : Users can choose the year for which the data should be visualized.
+6.  **CDA Plot** : When stations are selected under compare across, the plot will display the variation within those stations for the specified year. If years is chosen, the plot will display the trend of selected stations across the years 2021 to 2023.
+:::
+
+### 6.2.1 Test case: Compare Mean Temperature (°C) for One Stations Across Different Years
+
+![](images/clipboard-444474855.png)
+
+### 6.2.2 Test case: Compare Mean Temperature (°C) for Multiple Stations Across Different Years
+
+![](images/clipboard-3065426315.png)
+
+### 6.2.3 Test case: Compare Daily Rainfall Total (mm) for Station(s) Across the specified Year
+
+![](images/clipboard-2860953512.png)

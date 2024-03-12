@@ -1,5 +1,5 @@
 ##### Set up #####
-pacman::p_load(shiny, shinydashboard, tidyverse, ggplot2, dplyr, lubridate, ggthemes, plotly, ggHoriPlot, dtwclust, factoextra)
+pacman::p_load(shiny, shinydashboard, tidyverse, ggplot2, dplyr, lubridate, ggthemes, plotly, ggHoriPlot, dtwclust, factoextra, ggstatsplot)
 
 weather <- read_rds("data/weather_imputed_11stations.rds") 
 
@@ -107,7 +107,7 @@ body <- dashboardBody(
     
     # Second tab content
     tabItem(tabName = "EDACDA",
-            h2("Exploratory Data Analysis and Confirmatory Data analysis"),
+            h2("Exploratory and Confirmatory Data analysis"),
             EDACDASubTabs
             
     ),    
@@ -231,33 +231,90 @@ server <- function(input, output, session) {
       }
   })
   
+
+  ##### For CDA #####
+  # Dynamic UI
+  output$dynamicUIForCDA <- renderUI({
+    if (input$CompareAcross == "Years") {
+      list(
+        checkboxGroupInput("stationSelectionForCDA", "Select Station",
+                           choices = unique(weather$Station),
+                           selected = unique(weather$Station)[1])
+      )
+    } else if (input$CompareAcross == "Stations") {
+      list(
+        checkboxGroupInput("stationSelectionForCDA", "Select Stations",
+                           choices = unique(weather$Station),
+                           selected = unique(weather$Station)[1]),
+        selectInput("yearSelectionForCDA", "Select Year",
+                    choices = unique(weather$Year), 
+                    selected = unique(weather$Year)[1])
+      )
+    }
+  })
   
-  # Output the CDA plot using the reactive data
+  # Reactive update button
+  reactiveDataCDA <- eventReactive(input$updateCDAPlot, {
+    selected_var <- input$selectedVariable
+    
+    # Filter data based on user input
+    if (input$CompareAcross == "Years") {
+      selected_data <- weather %>%
+        filter(Station %in% input$stationSelectionForCDA)
+    } else if (input$CompareAcross == "Stations"){
+      selected_data <- weather %>%
+        filter(Year == input$yearSelectionForCDA,
+               Station %in% input$stationSelectionForCDA)
+    }
+    
+    title <- ifelse(input$CompareAcross == "Years",
+                    paste(selected_var, "for", "station(s)", "across the years 2021 to 2023"),
+                    paste(selected_var, "for", input$yearSelectionForCDA, "across station(s)"))
+    
+    
+    return(list(data = selected_data,var = selected_var, title = title))
+  })
+  
+  # Output the CDA plot
   output$cdaPlot <- renderPlot({
-    # Use the reactive data for plotting
-    data_to_plot <- reactiveDataCDA()  # Correct usage as a reactive variable
+    # Get the reactive data
+    res <- reactiveDataCDA()
+    data_to_plot <- res$data
+    selected_var <- res$var
+    title <- res$title
     
-    # Define the statistical approach type based on user selection
-    type <- switch(input$selectedStatApproach,
-                   "parametric" = "p",
-                   "nonparametric" = "np",
-                   "robust" = "robust",
-                   "bayes" = "bf")
+    # Convert the selected variable to a symbol for ggplot
+    var_symbol <- rlang::sym(selected_var)
     
-    # Generate the plot with ggbetweenstats
-    ggbetweenstats(
-      data = data_to_plot,
-      x = Station,
-      y = as.name(input$selectedVariable), 
-      type = type,  # For non-parametric; replace with input logic if needed
-      mean.ci = TRUE, 
-      pairwise.comparisons = TRUE, 
-      pairwise.annotation = "p.value",
-      pairwise.display = "none", 
-      sig.level = NA,
-      p.adjust.method = "fdr",
-      messages = FALSE
-    )
+    if (input$CompareAcross == "Years") {
+      # Generate the plot with grouped_ggbetweenstats
+      grouped_ggbetweenstats(data = data_to_plot,
+                                  x = "Station",
+                                  y = !!var_symbol,
+                                  grouping.var = "Year",
+                                  type = input$selectedStatApproach, 
+                                  mean.ci = TRUE, 
+                                  pairwise.comparisons = TRUE, 
+                                  pairwise.annotation = FALSE,
+                                  pairwise.display = "none", 
+                                  sig.level = NA,
+                                  p.adjust.method = "fdr",
+                                  messages = FALSE)
+    } else {
+      # Generate the plot with ggbetweenstats
+      ggbetweenstats(data = data_to_plot,
+        x = "Station",
+        y = !!var_symbol, 
+        type = input$selectedStatApproach,
+        mean.ci = TRUE, 
+        pairwise.comparisons = TRUE, 
+        pairwise.annotation = "p.value",
+        pairwise.display = "none", 
+        sig.level = NA,
+        p.adjust.method = "fdr",
+        messages = FALSE)
+    }
+    
   })
   
 }
