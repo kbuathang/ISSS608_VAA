@@ -529,9 +529,9 @@ The EDA and CDA tab will consist of two sub-tabs:
 
 ## 6.1 Exploratory Data Analysis
 
-The main objective of exploratory data analysis section is to allow users with the tools to delve into and identify trends within different weather variables across selected year and stations. This interactive experience aims to enhance users' understanding of weather variable patterns and to facilitate the discovery of key insights through visualization. However, for rainfall variable, we will implement dot plots for the better visual
+The main objective of exploratory data analysis section is to allow users with the tools to delve into and identify trends within different weather variables across selected year and stations. This interactive experience aims to enhance users' understanding of weather variable patterns and to facilitate the discovery of key insights through visualization. However, for rainfall variable, we will implement dot plots for the better visual.
 
-![](images/clipboard-2857876835.png)
+![](images/clipboard-456216068.png)
 
 ::: callout-tip
 ## Interactive features
@@ -559,7 +559,7 @@ The main objective of exploratory data analysis section is to allow users with t
 
 The main objective of Confirmatory Data Analysis section is to provide users with a reliable method to ensure the patterns observed in weather variables are true. This section builds on the preliminary findings by offering a statistical approach to validate these patterns across selected years or stations.
 
-![](images/clipboard-1198253127.png)
+![](images/clipboard-1882135096.png)
 
 ::: callout-tip
 ## Interactive features
