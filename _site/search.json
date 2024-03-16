@@ -1208,7 +1208,7 @@
     "href": "index.html",
     "title": "Welcome to ISSS608 Visual Analytics and Applications website",
     "section": "",
-    "text": "Lastest Posts\n\n\n\n\n\n\n\n\n\n\n\n\n\nIn-class Exercise 7\n\n\n\n\n\n\n\n\n\nMar 8, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 8: Modelling, Visualising and Analysing Network Data with R\n\n\n\n\n\n\n\n\n\nMar 7, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nTake-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application\n\n\n\n\n\n\n\n\n\nMar 5, 2024\n\n\n\n\n\n\n\n\nNo matching items"
+    "text": "Latest Posts\n\n\n\n\n\n\n\n\n\n\n\n\n\nIn-class Exercise 9\n\n\n\n\n\n\n\n\n\nMar 16, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nIn-class Exercise 7\n\n\n\n\n\n\n\n\n\nMar 8, 2024\n\n\n\n\n\n\n\n\n\n\n\n\nHands-on Exercise 8: Modelling, Visualising and Analysing Network Data with R\n\n\n\n\n\n\n\n\n\nMar 7, 2024\n\n\n\n\n\n\n\n\nNo matching items"
   },
   {
     "objectID": "Take-home_Ex/Take-home_Ex2/Take-home_Ex2.html",
@@ -1937,5 +1937,26 @@
     "title": "Take-home Exercise 4: Prototyping Modules for Visual Analytics Shiny Application",
     "section": "6.2 Confirmatory Data Analysis",
     "text": "6.2 Confirmatory Data Analysis\nThe main objective of Confirmatory Data Analysis section is to provide users with a reliable method to ensure the patterns observed in weather variables are true. This section builds on the preliminary findings by offering a statistical approach to validate these patterns across selected years or stations.\n\n\n\n\n\n\n\nInteractive features\n\n\n\n\nChoose variable : Users can choose a weather variable such as Daily Rainfall Total (mm), Mean Temperature (°C), etc.\nCompare across : Users are allowed to compare across different stations or between years.\nStatistical Approach: Users can specify the type of statistical approach they want to use.\nSelect Stations : Users can select one or multiple stations for comparison.\nSelect Year : Users can choose the year for which the data should be visualized.\nCDA Plot : When stations are selected under compare across, the plot will display the variation within those stations for the specified year. If years is chosen, the plot will display the trend of selected stations across the years 2021 to 2023.\n\n\n\n\n6.2.1 Test case: Compare Mean Temperature (°C) for One Stations Across Different Years\n\n\n\n6.2.2 Test case: Compare Mean Temperature (°C) for Multiple Stations Across Different Years\n\n\n\n6.2.3 Test case: Compare Daily Rainfall Total (mm) for Station(s) Across the specified Year"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex9/In-class_Ex9.html",
+    "href": "In-class_Ex/In-class_Ex9/In-class_Ex9.html",
+    "title": "In-class Exercise 9",
+    "section": "",
+    "text": "In this exercise, four network data modelling and visualisation packages will be installed and launched. They are igraph, tidygraph, ggraph and visNetwork. Beside these four packages, tidyverse and lubridate, an R package specially designed to handle and wrangling time data will be installed and launched too.\n\npacman::p_load(igraph, tidygraph, ggraph, \n               visNetwork, lubridate, clock,\n               tidyverse, graphlayouts)"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex9/In-class_Ex9.html#data-preparation",
+    "href": "In-class_Ex/In-class_Ex9/In-class_Ex9.html#data-preparation",
+    "title": "In-class Exercise 9",
+    "section": "Data Preparation",
+    "text": "Data Preparation\nBefore we can plot the interactive network graph, we need to prepare the data model by using the code chunk below.\n\nGAStech_edges_aggregated &lt;- GAStech_edges %&gt;%\n  left_join(GAStech_nodes, by = c(\"sourceLabel\" = \"label\")) %&gt;%\n  rename(from = id) %&gt;%\n  left_join(GAStech_nodes, by = c(\"targetLabel\" = \"label\")) %&gt;%\n  rename(to = id) %&gt;%\n  filter(MainSubject == \"Work related\") %&gt;%\n  group_by(from, to) %&gt;%\n    summarise(weight = n()) %&gt;%\n  filter(from!=to) %&gt;%\n  filter(weight &gt; 1) %&gt;%\n  ungroup()"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex9/In-class_Ex9.html#plotting-the-interactive-network-graph-with-visual-attributes---nodes",
+    "href": "In-class_Ex/In-class_Ex9/In-class_Ex9.html#plotting-the-interactive-network-graph-with-visual-attributes---nodes",
+    "title": "In-class Exercise 9",
+    "section": "Plotting the Interactive Network Graph with visual attributes - Nodes",
+    "text": "Plotting the Interactive Network Graph with visual attributes - Nodes\nThe code chunk below rename Department field to group.\n\nGAStech_nodes &lt;- GAStech_nodes %&gt;%\n  rename(group = Department) \n\nIn the code chunk below, Fruchterman and Reingold layout is used.\n\nvisNetwork(GAStech_nodes,\n           GAStech_edges_aggregated) %&gt;%\n  visIgraphLayout(layout = \"layout_with_fr\") %&gt;%\n  visLegend() %&gt;%\n  visLayout(randomSeed = 123)"
   }
 ]
